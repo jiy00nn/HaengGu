@@ -6,7 +6,7 @@ version: "3.8"
 # Services or Containers List definition
 services:
   mariadb:
-    image: mariadb:latest
+    image: mariadb:10.6
     container_name: "database"
     restart: always
     volumes:
@@ -15,7 +15,11 @@ services:
       - ./database/initdb.d:/docker-entrypoint-initdb.d
     ports:
       - 3306:3306
-    env_file: .env
+    environment:
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
     networks:
       - backend
 
