@@ -1,0 +1,23 @@
+# Docker schema version definition
+# Check the compatibility matrix with the current schema version in the File Creation Reference.
+# https://docs.docker.com/compose/compose-file/
+version: "3.8"
+
+# Services or Containers List definition
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: "database"
+    restart: always
+    volumes:
+      - ./database/conf.d:/etc/mysql/conf.d
+      - ./database/data:/var/lib/mysql
+      - ./database/initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
+    env_file: .env
+    networks:
+      - backend
+
+networks:
+  backend:
