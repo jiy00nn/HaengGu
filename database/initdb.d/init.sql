@@ -1,0 +1,10 @@
+-- CREATE TABLE User {
+--     idx,
+--     name,
+--     password,
+--     email,
+--     created_date,
+--     updated_date,
+--     constraint uc_email primary key(email),
+--     constraint pk_user_idx primary key(idx)
+-- }

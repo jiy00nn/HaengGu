@@ -5,23 +5,35 @@ version: "3.8"
 
 # Services or Containers List definition
 services:
-  mariadb:
-    image: mariadb:10.6
+  # server:
+  #   container_name: "haenggu_backend"
+  #   build:
+  #     context: ./restapi
+  #     dockerfile: Dockerfile
+  #   ports: 
+  #     - 8080:8080
+  #   depends_on:
+  #     - mariadb
+
+  postgres:
     container_name: "database"
-    restart: always
+    image: postgres:14
+    restart: unless-stopped # 강제 종료 되었을 때 재 실행
     volumes:
-      - ./database/conf.d:/etc/mysql/conf.d
-      - ./database/data:/var/lib/mysql
+      - ./database/conf.d/postgres.conf:/etc/postgresql/postgresql.conf:rw
+      - ./database/conf.d/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - ./database/data:/var/lib/postgresql
       - ./database/initdb.d:/docker-entrypoint-initdb.d
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
     ports:
-      - 3306:3306
+      - 5432:5432
     environment:
-      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
-      - MARIADB_DATABASE=${MARIADB_DATABASE}
-      - MARIADB_USER=${MARIADB_USER}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      TZ: "Asia/Seoul"
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
       - backend
-
+  
 networks:
   backend:
