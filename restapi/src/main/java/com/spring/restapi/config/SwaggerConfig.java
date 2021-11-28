@@ -1,2 +1,4 @@
-package com.spring.restapi.config;public class SwaggerConfig {
+package com.spring.restapi.config;
+
+public class SwaggerConfig {
 }
