@@ -1,0 +1,19 @@
+spring:
+  data:
+    rest:
+      base-path: /api
+      default-page-size: 10
+      max-page-size: 10
+  datasource:
+    url: jdbc:postgresql://localhost:5432/haenggu
+    username: haenggu_user
+    password: haenggu1234*
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    defer-datasource-initialization: true
+

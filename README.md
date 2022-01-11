@@ -1,14 +1,18 @@
 # HaengGu
 
 ## Index
-  - [Overview](#overview) 
+
+- [Overview](#overview)
+
   <!-- - [Getting Started](#getting-started)
   - [Authors](#authors)
 <!--  Other options to write Readme
   - [Deployment](#deployment)
   - [Used or Referenced Projects](Used-or-Referenced-Projects)
 -->
+
 ## About HanegGu Project
+
 This project's purpose is to create rest api server for HaengGu mobile app.
 
 <!-- ## Overview
@@ -47,7 +51,8 @@ And repeat
  -->
 
 ## Authors
-  - [jiy00nn](https://github.com/jiy00nn) - **JiYoon Bak** - <wldbs204@gmail.com>
+
+- [jiy00nn](https://github.com/jiy00nn) - **JiYoon Bak** - <wldbs204@gmail.com>
 
 <!--
 ## Used or Referenced Projects
