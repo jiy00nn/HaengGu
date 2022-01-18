@@ -1,4 +1,4 @@
-package com.haenggu.domain;
+package com.haenggu.domain.entity;
 
 import lombok.Builder;
 import lombok.Getter;

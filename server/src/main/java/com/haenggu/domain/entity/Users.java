@@ -1,4 +1,4 @@
-package com.haenggu.domain;
+package com.haenggu.domain.entity;
 
 import com.haenggu.domain.enums.SocialType;
 import com.sun.istack.NotNull;
