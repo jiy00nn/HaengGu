@@ -49,5 +49,5 @@ public class Event extends BaseTimeEntity {
 
     @ElementCollection
     @Column(length = 50)
-    private List<String> tag;
+    private List<String> tag; 
 }
