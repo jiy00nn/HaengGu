@@ -4,14 +4,12 @@ import com.haenggu.domain.BaseTimeEntity;
 import com.haenggu.domain.enums.CategoryType;
 import com.haenggu.domain.enums.RegionType;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Table
 @Getter
@@ -20,7 +18,8 @@ import java.util.UUID;
 public class Event extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID event_id;
+    @Column(name = "event_id")
+    private Long eventId;
 
     @Column(length = 50, nullable = false)
     private String title;
@@ -49,5 +48,9 @@ public class Event extends BaseTimeEntity {
 
     @ElementCollection
     @Column(length = 50)
-    private List<String> tag; 
+    private List<String> tag;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "event_id")
+    private List<EventImage> image;
 }
