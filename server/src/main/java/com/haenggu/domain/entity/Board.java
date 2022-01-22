@@ -1,4 +1,4 @@
-package com.haenggu.domain;
+package com.haenggu.domain.entity;
 
 import com.haenggu.domain.enums.BoardType;
 import lombok.Builder;
