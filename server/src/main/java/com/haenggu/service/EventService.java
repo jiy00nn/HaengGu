@@ -1,9 +1,9 @@
 package com.haenggu.service;
 
-import com.haenggu.configuration.FileStorageProperties;
 import com.haenggu.domain.entity.Event;
 import com.haenggu.domain.entity.EventImage;
 import com.haenggu.exception.FileStorageException;
+import com.haenggu.payload.EventResponse;
 import com.haenggu.repository.EventImageRepository;
 import com.haenggu.repository.EventRepository;
 import org.springframework.data.domain.Page;
@@ -13,37 +13,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class EventService {
-    //    private final Path fileStorageLocation;
     private final EventRepository eventRepository;
     private final EventImageRepository eventImageRepository;
 
     @Autowired
-    public EventService(FileStorageProperties fileStorageProperties, EventRepository eventRepository, EventImageRepository eventImageRepository) {
+    public EventService(EventRepository eventRepository, EventImageRepository eventImageRepository) {
         this.eventRepository = eventRepository;
         this.eventImageRepository = eventImageRepository;
-//        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
-//
-//        try{
-//            Files.createDirectories(this.fileStorageLocation);
-//        } catch (Exception e) {
-//            throw new FileStorageException("Could not create the directory where the uploaded files will be stored.", e);
-//        }
     }
 
-    public Page<Event> findAll(Pageable pageable) {
-        return eventRepository.findAll(pageable);
+    public Page<EventResponse> findAll(Pageable pageable) {
+        Page<Event> events = eventRepository.findAll(pageable);
+        Page<EventResponse> eventResponses = events.map(event ->  makeEventResponse(event));
+        return eventResponses;
     }
 
-    public Event findById(UUID idx) {
-        return eventRepository.getEventByEventId(idx);
+    public EventResponse findById(UUID idx) {
+        Event event = eventRepository.getEventByEventId(idx);
+        return makeEventResponse(event);
     }
 
     public Event save(Event event) {
@@ -104,10 +98,6 @@ public class EventService {
                 throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
             }
 
-            // Copy file to the target location (Replacing existing file with the same name)
-            // Path targetLocation = this.fileStorageLocation.resolve(fileName);
-            // Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
             EventImage eventImage =
                     EventImage.builder()
                             .eventId(eventId)
@@ -124,18 +114,37 @@ public class EventService {
         }
     }
 
-//    public Resource loadFileAsResource(String fileName) {
-//        try {
-//            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
-//            Resource resource = new UrlResource(filePath.toUri());
-//            if(resource.exists()) {
-//                return resource;
-//            } else {
-//                throw new MyFileNotFoundException("File not found " + fileName);
-//            }
-//
-//        } catch (MalformedURLException e) {
-//            throw new MyFileNotFoundException("File not found " + fileName, e);
-//        }
-//    }
+    public EventImage loadFileAsByte(UUID imageId) {
+        return eventImageRepository.getEventImageByImageId(imageId);
+    }
+
+    public EventResponse makeEventResponse(Event event) {
+        return EventResponse.builder()
+                .eventId(event.getEventId())
+                .title(event.getTitle())
+                .description(event.getDescription())
+                .startedDate(event.getStartedDate())
+                .endedDate(event.getEndedDate())
+                .reservationEndedDate(event.getReservationEndedDate())
+                .eventLocation(event.getEventLocation())
+                .category(event.getCategory())
+                .region(event.getRegion())
+                .tag(event.getTag())
+                .imageUrl(getImageUri(event.getImage()))
+                .build();
+    }
+
+    public List<String> getImageUri(List<EventImage> eventImages) {
+        List<String> imageUrl = new ArrayList<>();
+
+        for (EventImage image : eventImages) {
+            String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/api/events/"+ image.getEventId() + "/image/")
+                    .path(image.getImageId().toString())
+                    .toUriString();
+            imageUrl.add(uri);
+        }
+
+        return imageUrl;
+    }
 }

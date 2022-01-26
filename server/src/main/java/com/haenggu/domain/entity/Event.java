@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Table
 @Data
@@ -19,7 +20,7 @@ public class Event extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "event_id")
-    private Long eventId;
+    private UUID eventId;
 
     @Column(length = 50, nullable = false)
     private String title;
