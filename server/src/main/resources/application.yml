@@ -1,9 +1,4 @@
 spring:
-  data:
-    rest:
-      base-path: /api
-      default-page-size: 10
-      max-page-size: 10
   datasource:
     url: jdbc:postgresql://localhost:5432/haenggu
     username: haenggu_user
@@ -21,5 +16,8 @@ spring:
       enabled: true # Enable multipart uploads
       max-file-size: 200MB # Max file size
       max-request-size: 215MB # Max Request size
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 file:
   upload-dir: ./uploaded_files
