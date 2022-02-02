@@ -1,0 +1,49 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:postgresql://localhost:5432/haenggu
+    username: haenggu_user
+    password: haenggu1234*
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    defer-datasource-initialization: true
+  servlet:
+    multipart:
+      enabled: true # Enable multipart uploads
+      max-file-size: 200MB # Max file size
+      max-request-size: 215MB # Max Request size
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:postgresql://database:5432/haenggu
+    username: haenggu_user
+    password: haenggu1234*
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    defer-datasource-initialization: true
+  servlet:
+    multipart:
+      enabled: true # Enable multipart uploads
+      max-file-size: 200MB # Max file size
+      max-request-size: 215MB # Max Request size
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher

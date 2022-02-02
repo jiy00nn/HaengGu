@@ -5,18 +5,18 @@ version: "3.8"
 
 # Services or Containers List definition
 services:
-  # server:
-  #   container_name: "haenggu_backend"
-  #   build:
-  #     context: ./restapi
-  #     dockerfile: Dockerfile
-  #   ports: 
-  #     - 8080:8080
-  #   depends_on:
-  #     - postgres
-
+  restapi:
+    container_name: haenggu_backend
+    image: springio/gs-spring-boot-docker
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
   postgres:
-    container_name: "database"
+    container_name: database
     image: postgres:14
     restart: unless-stopped # 강제 종료 되었을 때 재 실행
     volumes:
@@ -26,14 +26,9 @@ services:
       - ./database/initdb.d:/docker-entrypoint-initdb.d
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       TZ: "Asia/Seoul"
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    networks:
-      - backend
-
-networks:
-  backend:
