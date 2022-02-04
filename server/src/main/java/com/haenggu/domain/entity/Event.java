@@ -1,5 +1,6 @@
 package com.haenggu.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.haenggu.domain.BaseTimeEntity;
 import com.haenggu.domain.enums.CategoryType;
 import com.haenggu.domain.enums.RegionType;
@@ -53,5 +54,6 @@ public class Event extends BaseTimeEntity {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "event_id")
+    @JsonIgnore
     private List<EventImage> image;
 }

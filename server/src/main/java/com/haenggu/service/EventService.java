@@ -3,7 +3,7 @@ package com.haenggu.service;
 import com.haenggu.domain.entity.Event;
 import com.haenggu.domain.entity.EventImage;
 import com.haenggu.exception.FileStorageException;
-import com.haenggu.payload.EventResponse;
+import com.haenggu.http.response.EventResponse;
 import com.haenggu.repository.EventImageRepository;
 import com.haenggu.repository.EventRepository;
 import org.springframework.data.domain.Page;
