@@ -3,6 +3,7 @@ package com.haenggu.service;
 import com.haenggu.domain.entity.Event;
 import com.haenggu.domain.entity.EventImage;
 import com.haenggu.domain.enums.CategoryType;
+import com.haenggu.domain.enums.RegionType;
 import com.haenggu.exception.FileStorageException;
 import com.haenggu.http.response.EventResponse;
 import com.haenggu.repository.EventImageRepository;
@@ -30,8 +31,23 @@ public class EventService {
         this.eventImageRepository = eventImageRepository;
     }
 
-    public Page<EventResponse> findAll(Pageable pageable) {
+    public Page<EventResponse> findEvents(Pageable pageable) {
         Page<Event> events = eventRepository.findAll(pageable);
+        return events.map(this::makeEventResponse);
+    }
+
+    public Page<EventResponse> findEvents(CategoryType categoryType, Pageable pageable) {
+        Page<Event> events = eventRepository.findEventByCategory(categoryType, pageable);
+        return events.map(this::makeEventResponse);
+    }
+
+    public Page<EventResponse> findEvents(RegionType regionType, Pageable pageable) {
+        Page<Event> events = eventRepository.findEventByRegion(regionType, pageable);
+        return events.map(this::makeEventResponse);
+    }
+
+    public Page<EventResponse> findEvents(CategoryType categoryType,RegionType regionType, Pageable pageable) {
+        Page<Event> events = eventRepository.findEventByCategoryAndRegion(categoryType, regionType, pageable);
         return events.map(this::makeEventResponse);
     }
 
@@ -40,14 +56,8 @@ public class EventService {
         return makeEventResponse(event);
     }
 
-    public Page<EventResponse> findByCategory(CategoryType categoryType, Pageable pageable) {
-        Page<Event> events = eventRepository.findEventByCategory(categoryType, pageable);
-        return events.map(this::makeEventResponse);
-    }
-
     public Event save(Event event) {
-        Event result = eventRepository.save(event);
-        return result;
+        return eventRepository.save(event);
     }
 
     @Transactional
@@ -95,7 +105,7 @@ public class EventService {
 
     public EventImage storeFile(UUID eventId, MultipartFile file) {
         // Normalize file name
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
         try {
             // Check if the file's name contains invalid characters
@@ -111,9 +121,8 @@ public class EventService {
                             .size(file.getSize())
                             .data(file.getBytes())
                             .build();
-            EventImage result = eventImageRepository.save(eventImage);
 
-            return result;
+            return eventImageRepository.save(eventImage);
         } catch (IOException ex) {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }

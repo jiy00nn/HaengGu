@@ -1,5 +1,7 @@
 package com.haenggu.http.response;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.haenggu.domain.enums.CategoryType;
 import com.haenggu.domain.enums.RegionType;
 import lombok.Builder;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class EventResponse {
     private UUID eventId;
     private String title;

@@ -1,5 +1,6 @@
 package com.haenggu.controller;
 
+import com.haenggu.controller.examples.EventControllerExample;
 import com.haenggu.domain.entity.Event;
 import com.haenggu.domain.entity.EventImage;
 import com.haenggu.domain.enums.CategoryType;
@@ -7,7 +8,7 @@ import com.haenggu.domain.enums.RegionType;
 import com.haenggu.http.response.EventListResponse;
 import com.haenggu.http.response.EventResponse;
 import com.haenggu.http.response.GeneralResponse;
-import com.haenggu.payload.UploadFileResponse;
+import com.haenggu.http.response.UploadFileResponse;
 import com.haenggu.service.EventService;
 
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -39,7 +40,7 @@ import java.util.stream.Collectors;
 @Tag(name = "event", description = "행사 정보 관련 API")
 @RestController
 @RequestMapping("/api/events")
-public class EventController {
+public class EventController extends EventControllerExample {
     private final EventService eventService;
 
     @Autowired
@@ -58,17 +59,16 @@ public class EventController {
                                                        @Parameter(name = "region", in = ParameterIn.QUERY, description = "지역 카테고리") @RequestParam(value="region", required = false) RegionType regionType) {
         Page<EventResponse> events;
         if (categoryType != null && regionType != null) {
-            events = eventService.findAll(pageable);
+            events = eventService.findEvents(categoryType, regionType, pageable);
         } else if (categoryType != null) {
-            events = eventService.findByCategory(categoryType, pageable);
+            events = eventService.findEvents(categoryType, pageable);
         } else if (regionType != null) {
-            events = eventService.findAll(pageable);
+            events = eventService.findEvents(regionType, pageable);
         } else {
-            events = eventService.findAll(pageable);
+            events = eventService.findEvents(pageable);
         }
 
-        EventListResponse eventListResponse = new EventListResponse(pageable, events);
-        return ResponseEntity.ok(eventListResponse);
+        return ResponseEntity.ok(new EventListResponse(pageable, events));
     }
 
     @Operation(summary = "행사 정보 상세 조회", description = "아이디를 통해 행사의 상세 정보를 조회합니다.", tags = "event",
@@ -85,8 +85,9 @@ public class EventController {
     @Operation(summary = "행사 정보 등록", description = "새로운 행사 정보를 등록합니다.", tags = "event",
                responses = {
                     @ApiResponse(responseCode = "201", description = "행사 정보 등록 성공",
-                                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = Event.class))),
+                                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = Event.class)))
                })
+    @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
     public ResponseEntity<Event> postEvent(@RequestBody Event event) {
         Event result = eventService.save(event);
@@ -110,10 +111,11 @@ public class EventController {
 
     @Operation(summary = "행사 정보 삭제", description = "행사 정보를 삭제합니다.", tags = "event",
                responses = {
-                    @ApiResponse(responseCode = "200", description = "행사 정보 삭제 성공",
+                    @ApiResponse(responseCode = "204", description = "행사 정보 삭제 성공",
                                  content = @Content(mediaType = "application/json", schema = @Schema(implementation = GeneralResponse.class),
                                  examples = @ExampleObject(value = EVENT_DELETE_SUCCESS)))
                })
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{idx}")
     public  ResponseEntity<GeneralResponse> deleteBoard(@Parameter(name = "idx", in = ParameterIn.PATH, description = "삭제할 행사의 아이디") @PathVariable("idx")UUID idx) {
         eventService.deleteById(idx);
@@ -135,12 +137,10 @@ public class EventController {
                 .path(result.getImageId().toString())
                 .toUriString();
 
-        UploadFileResponse uploadFileResponse = UploadFileResponse.builder()
+        return UploadFileResponse.builder()
                 .fileName(result.getOriginalName()).fileDownloadUri(fileDownloadUri)
                 .fileType(result.getMimetype()).size(result.getSize())
                 .build();
-
-        return uploadFileResponse;
     }
 
     @Operation(summary = "다중 행사 이미지 등록", description = "여러개의 행사의 이미지를 등록합니다.", tags = "event",
@@ -167,13 +167,4 @@ public class EventController {
         EventImage image = eventService.loadFileAsByte(idx);
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image.getData());
     }
-
-    private static final String EVENT_DELETE_SUCCESS    = "{\n" +
-                                                          "    \"code\" : 204\n" +
-                                                          "    \"message\" : \"행사 정보 삭제에 성공하였습니다.\"\n" +
-                                                          "}";
-    private static final String EVENT_NOT_FOUND         = "{\n" +
-                                                          "    \"code\" : 404\n" +
-                                                          "    \"message\" : \"접근할 수 없는 아이디값입니다.\"\n" +
-                                                          "}";
 }
