@@ -1,60 +1,127 @@
 # HaengGu
+## Contents
+- [Instroduction](#Introduction)
+- [Requirements](#Requriements)
+- [Installation](#Installation)
+- [Deployment](#Deployment)
+- [Style Guide](#Style-Guide)
+- [Contributing](#Contributing)
+- [Maintainers](#Maintainers)
 
-## Index
-
-- [Overview](#overview)
-
-  <!-- - [Getting Started](#getting-started)
-  - [Authors](#authors)
-<!--  Other options to write Readme
-  - [Deployment](#deployment)
-  - [Used or Referenced Projects](Used-or-Referenced-Projects)
--->
-
-## About HanegGu Project
-
+## Introduction
 This project's purpose is to create rest api server for HaengGu mobile app.
 
-<!-- ## Overview
-**If you use this template, you can use this function**
-- Issue Template
-- Pull Request Template
-- Commit Template
-- Readme Template
-- Contribute Template
-- Pull Request Build Test(With Github Actions)
+## Requriements
+- [JDK 11](http://jdk.java.net/archive/) or later
+- Gradle 4+
+- You can also import the code straight into your IDE:
+  - [Spring Tool Suite (STS)](https://spring.io/tools)
+  - [IntelliJ IDEA](https://www.jetbrains.com/)
 
-## Getting Started
-**click `Use this template` and use this template!**
-<!--
-### Depencies
- Write about need to install the software and how to install them 
--->
-<!-- ### Installing -->
-<!-- A step by step series of examples that tell you how to get a development 
-env running
+## Installation
+- Install as you woud normally install a Java JDK 11
+- If you use IntelliJ, you must install lombok plugin
+  - Click *File > Settings > Plugin* or *Ctrl+Alt+S > Plugin*
+  - Search **lombok** and Install
 
-Say what the step will be
-
-    Give the example
-
-And repeat
-
-    until finished
--->
-<!-- 1. Click `Use this template` button 
-2. Create New Repository
-3. Update Readme and Others(Other features are noted in comments.) -->
-<!--
 ## Deployment
- Add additional notes about how to deploy this on a live system
- -->
+### Configuration
+- Configurate Docker environment file.
+  - Copy `.env.example` file and set the file name `.env`
+  - Enter the mariaDB information
+      ```
+      POSTGRES_DB={database name}
+      POSTGRES_USER={username}
+      POSTGRES_PASSWORD={userpassword}
+      ```
+  - Example
+      ```
+      POSTGRES_DB=testdatabase
+      POSTGRES_USER=testUsername
+      POSTGRES_PASSWORD=testPassword
+      ```
+- Edit application.yml file
+  - Correct the part below
+      ```
+      spring:
+          datasource:
+              url: jdbc:postgresql://localhost:5432/{database_name}
+              username: {user_name}
+              password: {user_password}
+          ...
+      ```
+  - Example
+      ```
+      spring:
+          datasource:
+              url: jdbc:postgresql://localhost:5432/testdatabase
+              username: testUsername
+              password: testPassword
+          ...
+      ```
 
-## Authors
+### Run Docker container for postgreSQL and Spring
+```
+docker-compose up --build -d
+```
 
-- [jiy00nn](https://github.com/jiy00nn) - **JiYoon Bak** - <wldbs204@gmail.com>
+### Use Swagger API Docs
+After building the project, access `http://localhost:8080/swagger-ui/index.html`
 
-<!--
-## Used or Referenced Projects
- - [referenced Project](project link) - **LICENSE** - little-bit introduce
---> 
+## Style Guide
+- I referred to [Google Style Guidelines](https://github.com/JunHoPark93/google-java-styleguide)
+- Source file structure
+  - A source file consists of, **in order**:
+    - License or copyright information, if present
+    - Package statement
+    - Import statements
+    - Exactly one top-level class
+- Class Name
+  - Use PascalCase
+  - Example
+    - `public class HelloWorld {}`
+- Method Name
+  - Use lowerCamelCase
+  - Begin with a verb/preposition
+  - Example
+    - `public void getUserByName(){}`
+    - `public void toString(){}`
+- Variable Name
+  - Use lowerCamelCase
+  - Example
+    - `private String myName`
+
+## Contributing
+1. Create issues about the work.
+2. Create a branch on the issue.
+3. Commit, push to the created branch.
+4. When the work is completed, request a pull request to main branch after rebaseing the main branch.
+5. Review the code and merge it.
+
+### Branching
+```
+ISSUE_NUMBER-description
+```
+- e.g. Issue 2 related to user authentication.
+    ```
+    2-user-authentication
+    ```
+
+### Commit Message
+Referred to [Beom Dev Log](https://beomseok95.tistory.com/328) and [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+
+```
+<type>[optional scope]: <description>
+[optional body]
+[optional footer(s)]
+```
+- Type
+  - build, docs, feat, fix, perf, reactor, test
+- Example
+    ```
+    feat: allow provided config object to extend other configs
+    ```
+
+## Maintainers
+Current maintainers:
+- Jiyoon Bak - https://github.com/jiy00nn
