@@ -7,7 +7,7 @@ import com.haenggu.domain.enums.RegionType;
 import com.haenggu.http.response.EventListResponse;
 import com.haenggu.http.response.EventResponse;
 import com.haenggu.http.response.GeneralResponse;
-import com.haenggu.payload.UploadFileResponse;
+import com.haenggu.http.response.UploadFileResponse;
 import com.haenggu.service.EventService;
 
 import io.swagger.v3.oas.annotations.media.ExampleObject;

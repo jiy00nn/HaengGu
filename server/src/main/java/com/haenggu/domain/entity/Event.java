@@ -1,11 +1,14 @@
 package com.haenggu.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.haenggu.domain.BaseTimeEntity;
 import com.haenggu.domain.enums.CategoryType;
 import com.haenggu.domain.enums.RegionType;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,49 +19,42 @@ import java.util.UUID;
 @Getter @Setter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Event extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "event_id")
-    @JsonProperty(value = "event_id")
     private UUID eventId;
 
     @Column(length = 50, nullable = false)
-    @JsonProperty(value = "title")
     private String title;
 
     @Column(length = 2000)
-    @JsonProperty(value = "description")
     private String description;
 
     @Column(name = "started_dt")
-    @JsonProperty(value = "started_date")
+    @Schema(name = "started_date", example = "")
     private LocalDateTime startedDate;
 
     @Column(name = "ended_dt")
-    @JsonProperty(value = "ended_date")
     private LocalDateTime endedDate;
 
     @Column(name = "reservation_deadline_dt")
-    @JsonProperty(value = "reservation_deadline_date")
     private LocalDateTime reservationEndedDate;
 
     @Column(length = 50, name = "event_location")
-    @JsonProperty(value = "event_location")
     private String eventLocation;
 
     @Column(length = 20, nullable = false)
-    @JsonProperty(value = "category")
     @Enumerated(EnumType.STRING)
     private CategoryType category;
 
     @Column(length = 10)
-    @JsonProperty(value = "region")
+    @Enumerated(EnumType.STRING)
     private RegionType region;
 
     @ElementCollection
     @Column(length = 50)
-    @JsonProperty(value = "tag")
     private List<String> tag;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
