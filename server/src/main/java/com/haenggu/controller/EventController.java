@@ -23,7 +23,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +56,7 @@ public class EventController extends EventControllerExample {
                                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = EventListResponse.class))),
                })
     @GetMapping
-    public ResponseEntity<EventListResponse> getEvents(@PageableDefault Pageable pageable,
+    public ResponseEntity<EventListResponse> getEvents(@PageableDefault @SortDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
                                                        @Parameter(name = "category", in = ParameterIn.QUERY, description = "행사 카테고리") @RequestParam(value="category", required = false) CategoryType categoryType,
                                                        @Parameter(name = "region", in = ParameterIn.QUERY, description = "지역 카테고리") @RequestParam(value="region", required = false) RegionType regionType) {
         Page<EventResponse> events;
