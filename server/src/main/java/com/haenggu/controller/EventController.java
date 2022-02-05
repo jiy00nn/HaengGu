@@ -18,7 +18,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,7 +25,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,9 +54,19 @@ public class EventController {
                })
     @GetMapping
     public ResponseEntity<EventListResponse> getEvents(@PageableDefault Pageable pageable,
-                                                       @Parameter(name = "category", in = ParameterIn.QUERY, description = "행사 카테고리") CategoryType categoryType,
-                                                       @Parameter(name = "region", in = ParameterIn.QUERY, description = "지역 카테고리") RegionType regionType) {
-        Page<EventResponse> events = eventService.findAll(pageable);
+                                                       @Parameter(name = "category", in = ParameterIn.QUERY, description = "행사 카테고리") @RequestParam(value="category", required = false) CategoryType categoryType,
+                                                       @Parameter(name = "region", in = ParameterIn.QUERY, description = "지역 카테고리") @RequestParam(value="region", required = false) RegionType regionType) {
+        Page<EventResponse> events;
+        if (categoryType != null && regionType != null) {
+            events = eventService.findAll(pageable);
+        } else if (categoryType != null) {
+            events = eventService.findByCategory(categoryType, pageable);
+        } else if (regionType != null) {
+            events = eventService.findAll(pageable);
+        } else {
+            events = eventService.findAll(pageable);
+        }
+
         EventListResponse eventListResponse = new EventListResponse(pageable, events);
         return ResponseEntity.ok(eventListResponse);
     }

@@ -2,6 +2,7 @@ package com.haenggu.service;
 
 import com.haenggu.domain.entity.Event;
 import com.haenggu.domain.entity.EventImage;
+import com.haenggu.domain.enums.CategoryType;
 import com.haenggu.exception.FileStorageException;
 import com.haenggu.http.response.EventResponse;
 import com.haenggu.repository.EventImageRepository;
@@ -31,13 +32,17 @@ public class EventService {
 
     public Page<EventResponse> findAll(Pageable pageable) {
         Page<Event> events = eventRepository.findAll(pageable);
-        Page<EventResponse> eventResponses = events.map(event ->  makeEventResponse(event));
-        return eventResponses;
+        return events.map(this::makeEventResponse);
     }
 
     public EventResponse findById(UUID idx) {
         Event event = eventRepository.getEventByEventId(idx);
         return makeEventResponse(event);
+    }
+
+    public Page<EventResponse> findByCategory(CategoryType categoryType, Pageable pageable) {
+        Page<Event> events = eventRepository.findEventByCategory(categoryType, pageable);
+        return events.map(this::makeEventResponse);
     }
 
     public Event save(Event event) {
