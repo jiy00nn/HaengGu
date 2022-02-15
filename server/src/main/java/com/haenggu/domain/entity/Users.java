@@ -1,5 +1,7 @@
 package com.haenggu.domain.entity;
 
+import com.haenggu.domain.BaseTimeEntity;
+import com.haenggu.domain.enums.RoleType;
 import com.haenggu.domain.enums.SocialType;
 import com.sun.istack.NotNull;
 import lombok.Builder;
@@ -17,7 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class Users {
+public class Users extends BaseTimeEntity {
 
     @Id
     @Column
@@ -28,14 +30,12 @@ public class Users {
     @Column(length = 10, columnDefinition = "char")
     private String username;
 
-    @Column(length = 30)
-    private String password;
-
     @Column(length = 50)
     private String email;
 
-    @Column
-    private String principal;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RoleType roleType;
 
     @Column(length = 10)
     @Enumerated(EnumType.STRING)
@@ -61,21 +61,11 @@ public class Users {
     @Column(name = "region_tag", length = 50)
     private List<String> regionTag;
 
-    @CreatedDate
-    @Column(name = "created_at")
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    @Column(name = "updated_at")
-    private LocalDateTime updatedDate;
-
     @Builder
-    public Users(UUID user_id, String username, String password, String email, String principal, SocialType socialType, String gender, LocalDateTime birthday, UUID dept_id, Integer grade, List<String> eventTag, List<String> regionTag, LocalDateTime createdDate, LocalDateTime updatedDate) {
-        this.user_id = user_id;
+    public Users(String username, String email, RoleType roleType, SocialType socialType, String gender, LocalDateTime birthday, UUID dept_id, Integer grade, List<String> eventTag, List<String> regionTag) {
         this.username = username;
-        this.password = password;
         this.email = email;
-        this.principal = principal;
+        this.roleType = roleType;
         this.socialType = socialType;
         this.gender = gender;
         this.birthday = birthday;
@@ -83,7 +73,9 @@ public class Users {
         this.grade = grade;
         this.eventTag = eventTag;
         this.regionTag = regionTag;
-        this.createdDate = createdDate;
-        this.updatedDate = updatedDate;
+    }
+
+    public String getRoleKey() {
+        return this.roleType.getKey();
     }
 }
