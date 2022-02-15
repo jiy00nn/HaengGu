@@ -1,9 +1,9 @@
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: prod
   datasource:
-    url: jdbc:postgresql://localhost:5432/{database_name}
+    url: jdbc:postgresql://database:5432/{database_name}
     username: {username}
     password: {userpassword}
   jpa:

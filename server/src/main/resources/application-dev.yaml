@@ -1,11 +1,11 @@
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: dev
   datasource:
-    url: jdbc:postgresql://localhost:5432/{database_name}
-    username: {username}
-    password: {userpassword}
+    url: jdbc:postgresql://localhost:5432/haenggu
+    username: haenggu_user
+    password: haenggu1234*
   jpa:
     hibernate:
       ddl-auto: update
