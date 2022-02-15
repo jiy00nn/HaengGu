@@ -3,9 +3,9 @@ spring:
     activate:
       on-profile: dev
   datasource:
-    url: jdbc:postgresql://localhost:5432/haenggu
-    username: haenggu_user
-    password: haenggu1234*
+    url: jdbc:postgresql://localhost:5432/{database_name}
+    username: {username}
+    password: {userpassword}
   jpa:
     hibernate:
       ddl-auto: update
