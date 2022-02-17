@@ -1,0 +1,41 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:postgresql://database:5432/{database_name}
+    username: {username}
+    password: {password}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    defer-datasource-initialization: true
+  servlet:
+    multipart:
+      enabled: true # Enable multipart uploads
+      max-file-size: 200MB # Max file size
+      max-request-size: 215MB # Max Request size
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: {client_id}
+            redirect-uri: http://localhost:8080/api/login/oauth/kakao
+            client-authentication-method: POST
+            authorization_grant_type: authorization_code
+            scope: profile_nickname, account_email, gender
+            client-name: Kakao
+        provider:
+          kakao:
+            authorization_uri: https://kauth.kakao.com/oauth/authorize
+            token_uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user_name_attribute: id

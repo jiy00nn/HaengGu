@@ -1,26 +1,38 @@
 package com.haenggu.domain.enums;
 
+import org.springframework.http.HttpMethod;
+
 public enum SocialType {
-    FACEBOOK("facebook"),
-    GOOGLE("google"),
-    KAKAO("kakao");
+    KAKAO(
+            "kakao",
+            "https://kapi.kakao.com/v2/user/me",
+            HttpMethod.GET
+    ),
+    GOOGLE(
+            "google",
+            "https://www.googleapis.com/oauth2/v3/userinfo",
+            HttpMethod.GET
+    );
 
-    private final String ROLE_PREFIX = "ROLE_";
-    private String name;
+    private String value;
+    private String userInfoUrl;
+    private HttpMethod method;
 
-    SocialType(String name) {
-        this.name = name();
+    SocialType(String value, String userInfoUrl, HttpMethod method) {
+        this.value = value;
+        this.userInfoUrl = userInfoUrl;
+        this.method = method;
     }
 
-    public String getRoleType() {
-        return ROLE_PREFIX + name.toUpperCase();
+    public HttpMethod getMethod() {
+        return this.method;
     }
 
-    public String getValue() {
-        return name;
+    public String getSocialName() {
+        return this.value;
     }
 
-    public boolean isEquals(String authority) {
-        return this.getRoleType().equals(authority);
+    public String getUserInfoUrl() {
+        return this.userInfoUrl;
     }
 }
