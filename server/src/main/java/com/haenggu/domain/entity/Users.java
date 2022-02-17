@@ -7,8 +7,6 @@ import com.sun.istack.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,24 +20,26 @@ import java.util.UUID;
 public class Users extends BaseTimeEntity {
 
     @Id
-    @Column
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID user_id;
+    private UUID userId;
 
-    @NotNull
     @Column(length = 10, columnDefinition = "char")
     private String username;
 
     @Column(length = 50)
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private RoleType roleType;
+    // 소셜 로그인의 식별값
+    @Column
+    private String principal;
 
-    @Column(length = 10)
     @Enumerated(EnumType.STRING)
+    @Column(length = 10)
     private SocialType socialType;
+
+    @Enumerated(EnumType.STRING)
+    private RoleType roleType;
 
     @Column(length = 5)
     private String gender;
@@ -62,20 +62,9 @@ public class Users extends BaseTimeEntity {
     private List<String> regionTag;
 
     @Builder
-    public Users(String username, String email, RoleType roleType, SocialType socialType, String gender, LocalDateTime birthday, UUID dept_id, Integer grade, List<String> eventTag, List<String> regionTag) {
-        this.username = username;
-        this.email = email;
-        this.roleType = roleType;
+    public Users(String principal, SocialType socialType, RoleType roleType) {
+        this.principal = principal;
         this.socialType = socialType;
-        this.gender = gender;
-        this.birthday = birthday;
-        this.dept_id = dept_id;
-        this.grade = grade;
-        this.eventTag = eventTag;
-        this.regionTag = regionTag;
-    }
-
-    public String getRoleKey() {
-        return this.roleType.getKey();
+        this.roleType = roleType;
     }
 }
