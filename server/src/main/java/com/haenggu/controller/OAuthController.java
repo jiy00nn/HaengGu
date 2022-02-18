@@ -26,7 +26,6 @@ public class OAuthController {
     @GetMapping("/success/{id}")
     public ResponseEntity<?> successLogin(@PathVariable("id") UUID id) {
         Users user = userService.getUser(id);
-        System.out.println(user.getUserId());
         return ResponseEntity.ok(new LoginSuccessResponse(user.getUserId(), user.getRoleType()));
     }
 }
