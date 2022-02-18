@@ -2,6 +2,7 @@ package com.haenggu.service;
 
 import com.haenggu.auth.AccessTokenSocialTypeToken;
 import com.haenggu.domain.entity.Users;
+import com.haenggu.domain.enums.RoleType;
 import com.haenggu.repository.UserRepository;
 import com.haenggu.service.strategy.KakaoLoadStrategy;
 import com.haenggu.auth.OAuth2UserDetails;
@@ -25,6 +26,36 @@ public class UserService {
 
     public Users getUser(UUID id) {
         return userRepository.getByUserId(id);
+    }
+
+    public Users updateUser(UUID id, Users data) {
+        Users user = userRepository.getByUserId(id);
+        if(data.getBirthday() != null) {
+            user.setBirthday(data.getBirthday());
+        }
+        if(data.getDeptId() != null) {
+            user.setDeptId(data.getDeptId());
+        }
+        if(data.getEmail() != null) {
+            user.setEmail(data.getEmail());
+        }
+        if(data.getGender() != null) {
+            user.setGender(data.getGender());
+        }
+        if(data.getGrade() != null) {
+            user.setGrade(data.getGrade());
+        }
+        if(data.getUsername() != null) {
+            user.setUsername(data.getUsername());
+        }
+        if(data.getEventTag() != null) {
+            user.setEventTag(data.getEventTag());
+        }
+        if(data.getRegionTag() != null) {
+            user.setRegionTag(data.getRegionTag());
+        }
+        user.setRoleType(RoleType.USER);
+        return userRepository.save(user);
     }
 
     public OAuth2UserDetails getOAuth2UserDetails(AccessTokenSocialTypeToken authentication)  {
