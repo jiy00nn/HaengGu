@@ -15,7 +15,7 @@ import java.util.UUID;
 @RequestMapping("/api/oauth")
 public class OAuthController {
 
-    UserService userService;
+    private final UserService userService;
 
     @Autowired
     public OAuthController(UserService userService) {
