@@ -12,7 +12,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.UUID;
 
 @AllArgsConstructor
 public class JwtFilter extends GenericFilterBean {
@@ -27,10 +26,9 @@ public class JwtFilter extends GenericFilterBean {
         String requestURI = httpServletRequest.getRequestURI();
 
         if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-            UUID id = tokenProvider.getId(jwt);
             Authentication authentication = tokenProvider.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            System.out.println("토큰 인증 성공" + id.toString());
+            System.out.println("Security Context에 '"+authentication.getName()+"' 인증 정보를 저장했습니다, uri: "+requestURI);
         } else {
             System.out.println("유효한 JWT 토큰이 없습니다, uri: " + requestURI);
         }

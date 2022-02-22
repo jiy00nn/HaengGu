@@ -70,17 +70,6 @@ public class TokenProvider implements InitializingBean {
     }
 
     // token 값을 통하여 Authentication 객체를 리턴하는 메소드
-    public UUID getId(String token) {
-        Claims claims = Jwts
-                .parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-
-        return UUID.fromString(claims.getSubject());
-    }
-
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts
                 .parserBuilder()
