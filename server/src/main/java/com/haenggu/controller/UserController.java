@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@Tag(name = "user", description = "행사 정보 관련 API")
+@Tag(name = "user", description = "사용자 정보 관련 API")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -38,7 +39,7 @@ public class UserController {
                     @ApiResponse(responseCode = "200", description = "행사 정보 수정 성공",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = Users.class)))
             })
-    @PutMapping()
+    @PutMapping
     public ResponseEntity<Users> putUser(@RequestBody SignUpRequest signUpRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UUID idx = UUID.fromString(authentication.getPrincipal().toString());
