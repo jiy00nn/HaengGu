@@ -12,12 +12,14 @@ import lombok.ToString;
 @Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Token {
+    private String roleType;
     private String token;
     private String refreshToken;
 
     @Builder
-    public Token(String token, String refreshToken) {
+    public Token(String token, String refreshToken, String roleType) {
         this.token = token;
         this.refreshToken = refreshToken;
+        this.roleType = roleType;
     }
 }

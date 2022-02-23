@@ -1,58 +1,38 @@
 package com.haenggu.domain.entity;
 
-import com.haenggu.domain.enums.BoardType;
-import lombok.Builder;
+import com.haenggu.domain.BaseTimeEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
 @Entity
 @Table
-public class Board implements Serializable {
+public class Board extends BaseTimeEntity implements Serializable {
     @Id
     @Column
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long board_id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID boardId;
 
     @Column
     private String title;
 
     @Column
-    private String subTitle;
-
-    @Column
     private String content;
 
     @Column
-    @Enumerated(EnumType.STRING)
-    private BoardType boardType;
+    private LocalDateTime schedule;
 
-    @Column
-    private LocalDateTime createdDate;
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    private Event event;
 
-    @Column
-    private LocalDateTime updateDate;
-
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private Users user;
-
-    public Board(String title) {
-        this.title = title;
-    }
-
-    @Builder
-    public Board(String title, String subTitle, String content, BoardType boardType, LocalDateTime createdDate, LocalDateTime updateDate, Users user) {
-        this.title = title;
-        this.subTitle = subTitle;
-        this.content = content;
-        this.boardType = boardType;
-        this.createdDate = createdDate;
-        this.updateDate = updateDate;
-        this.user = user;
-    }
 }

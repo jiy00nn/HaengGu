@@ -53,20 +53,20 @@ public class TokenProvider implements InitializingBean {
         Date validity = new Date(now.getTime() + this.tokenValidityInMilliseconds);
         Date refreshValidity = new Date(now.getTime() + this.tokenRefreshValidityInMilliseconds);
 
-        return new Token(
-                Jwts.builder()
+        return Token.builder()
+                .token(Jwts.builder()
                         .setClaims(claims)
                         .setIssuedAt(new Date())
                         .setExpiration(validity)
                         .signWith(key, SignatureAlgorithm.HS512)
-                        .compact(),
-                Jwts.builder()
+                        .compact())
+                .refreshToken(Jwts.builder()
                         .setClaims(claims)
                         .setIssuedAt(new Date())
                         .setExpiration(refreshValidity)
                         .signWith(key, SignatureAlgorithm.HS512)
-                        .compact()
-        );
+                        .compact())
+                .roleType(roleType.getGrantedAuthority()).build();
     }
 
     // token 값을 통하여 Authentication 객체를 리턴하는 메소드
