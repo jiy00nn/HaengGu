@@ -3,6 +3,7 @@ package com.haenggu.auth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.haenggu.auth.jwt.Token;
 import com.haenggu.auth.jwt.TokenProvider;
+import com.haenggu.domain.enums.RoleType;
 import com.haenggu.domain.enums.SocialType;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.core.Authentication;
@@ -28,12 +29,10 @@ public class OAuth2AccessTokenAuthenticationFilter extends AbstractAuthenticatio
     private static final AntPathRequestMatcher DEFAULT_OAUTH2_LOGIN_PATH_REQUEST_MATCHER =
             new AntPathRequestMatcher(DEFAULT_OAUTH2_LOGIN_REQUEST_URL_PREFIX +"*", HTTP_METHOD); // "/api/oauth/login/*" 의 요청에, GET으로 온 요청에 매칭된다.
 
-    private final TokenProvider tokenProvider;
     private final ObjectMapper objectMapper;
 
     public OAuth2AccessTokenAuthenticationFilter(AccessTokenAuthenticationProvider accessTokenAuthenticationProvider, TokenProvider tokenProvider, ObjectMapper objectMapper) {
         super(DEFAULT_OAUTH2_LOGIN_PATH_REQUEST_MATCHER);   // 위에서 설정한  "/api/oauth/login/*" 의 요청에, GET으로 온 요청을 처리하기 위해 설정한다.
-        this.tokenProvider = tokenProvider;
         this.objectMapper = objectMapper;
         this.setAuthenticationManager(new ProviderManager(accessTokenAuthenticationProvider));
 
@@ -41,7 +40,7 @@ public class OAuth2AccessTokenAuthenticationFilter extends AbstractAuthenticatio
             OAuth2UserDetails oAuth2UserDetails = (OAuth2UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
             Token token = tokenProvider.createToken(oAuth2UserDetails.getId(), oAuth2UserDetails.getRoleType());
-            writeTokenResponse(response, token);
+            writeTokenResponse(response, token, oAuth2UserDetails.getRoleType());
         });
         this.setAuthenticationFailureHandler((request, response, exception) -> {
             // TODO 실패할 경우 response 정하기
@@ -64,7 +63,7 @@ public class OAuth2AccessTokenAuthenticationFilter extends AbstractAuthenticatio
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 URL 주소입니다"));
     }
 
-    private void writeTokenResponse(HttpServletResponse response, Token token)
+    private void writeTokenResponse(HttpServletResponse response, Token token, RoleType roleType)
             throws IOException {
         response.setContentType("application/json;charset=UTF-8");
 
