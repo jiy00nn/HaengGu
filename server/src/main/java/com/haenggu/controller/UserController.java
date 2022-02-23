@@ -1,26 +1,22 @@
 package com.haenggu.controller;
 
-import com.haenggu.domain.entity.Event;
 import com.haenggu.domain.entity.Users;
-import com.haenggu.domain.enums.RoleType;
 import com.haenggu.http.request.SignUpRequest;
-import com.haenggu.http.response.GeneralResponse;
 import com.haenggu.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@Tag(name = "user", description = "행사 정보 관련 API")
+@Tag(name = "user", description = "사용자 정보 관련 API")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -36,8 +32,10 @@ public class UserController {
                     @ApiResponse(responseCode = "200", description = "행사 정보 수정 성공",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = Users.class)))
             })
-    @PutMapping("/{idx}")
-    public ResponseEntity<Users> putUser(@Parameter(name = "idx", in = ParameterIn.PATH, description = "수정할 행사의 아이디") @PathVariable("idx") UUID idx, @RequestBody SignUpRequest signUpRequest) {
+    @PutMapping
+    public ResponseEntity<Users> putUser(@RequestBody SignUpRequest signUpRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UUID idx = UUID.fromString(authentication.getPrincipal().toString());
         Users data = Users.builder()
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
