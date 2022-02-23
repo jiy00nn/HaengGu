@@ -39,7 +39,10 @@ public class Event extends BaseTimeEntity {
     @Column(name = "ended_dt")
     private LocalDateTime endedDate;
 
-    @Column(name = "reservation_deadline_dt")
+    @Column(name = "reservation_started_dt")
+    private LocalDateTime reservationStartedDate;
+
+    @Column(name = "reservation_ended_dt")
     private LocalDateTime reservationEndedDate;
 
     @Column(length = 50, name = "event_location")
@@ -63,11 +66,13 @@ public class Event extends BaseTimeEntity {
     private List<EventImage> image;
 
     @Builder
-    public Event(String title, String description, LocalDateTime startedDate, LocalDateTime endedDate, LocalDateTime reservationEndedDate, String eventLocation, CategoryType category, RegionType region, List<String> tag) {
+    public Event(String title, String description, LocalDateTime startedDate, LocalDateTime endedDate,
+                 LocalDateTime reservationStartedDate, LocalDateTime reservationEndedDate, String eventLocation, CategoryType category, RegionType region, List<String> tag) {
         this.title = title;
         this.description = description;
         this.startedDate = startedDate;
         this.endedDate = endedDate;
+        this.reservationStartedDate = reservationStartedDate;
         this.reservationEndedDate = reservationEndedDate;
         this.eventLocation = eventLocation;
         this.category = category;

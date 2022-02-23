@@ -145,18 +145,6 @@ public class EventController extends EventControllerExample {
                 .build();
     }
 
-    @Operation(summary = "다중 행사 이미지 등록", description = "여러개의 행사의 이미지를 등록합니다.", tags = "event",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "행사 이미지 등록 성공",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UploadFileResponse.class)))
-            })
-    @PostMapping("/{idx}/uploadMultipleFiles")
-    public @ResponseBody List<UploadFileResponse> uploadMultipleFile(@PathVariable("idx") UUID idx, @RequestParam("files") MultipartFile[] files) {
-        return Arrays.stream(files)
-                .map(file -> uploadFile(idx, file))
-                .collect(Collectors.toList());
-    }
-
     @Operation(summary = "행사 이미지 조회", description = "행사 아이디와 이미지 아이디를 통해 이미지를 얻습니다.", tags = "event",
             responses = {
                     @ApiResponse(responseCode = "200", description = "행사 이미지 조회 성공",

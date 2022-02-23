@@ -1,5 +1,6 @@
 package com.haenggu.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.haenggu.domain.BaseTimeEntity;
@@ -22,6 +23,7 @@ public class Users extends BaseTimeEntity {
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
     private UUID userId;
 
     @Column(length = 50)
@@ -32,6 +34,7 @@ public class Users extends BaseTimeEntity {
 
     // 소셜 로그인의 식별값
     @Column
+    @JsonIgnore
     private String principal;
 
     @Enumerated(EnumType.STRING)
