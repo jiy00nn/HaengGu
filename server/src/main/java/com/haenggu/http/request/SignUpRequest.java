@@ -1,5 +1,7 @@
 package com.haenggu.http.request;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.haenggu.domain.enums.CategoryType;
 import com.haenggu.domain.enums.GenderType;
 import com.haenggu.domain.enums.RegionType;
@@ -11,6 +13,7 @@ import java.util.UUID;
 import java.util.List;
 
 @Getter
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SignUpRequest {
     private final String username;
     private final String email;
