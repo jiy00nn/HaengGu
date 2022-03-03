@@ -57,6 +57,10 @@ public class Users extends BaseTimeEntity {
     @Column(length = 2)
     private Integer grade;
 
+    @Column(length = 4)
+    @Enumerated(EnumType.STRING)
+    private MbtiType mbti;
+
     @ElementCollection
     @Enumerated(EnumType.STRING)
     @Column(name = "event_tag", length = 50)
@@ -68,7 +72,7 @@ public class Users extends BaseTimeEntity {
     private List<RegionType> regionTag;
 
     @Builder
-    public Users(String username, String email, String principal, SocialType socialType, RoleType roleType, GenderType gender, LocalDateTime birthday, School school, Integer grade, List<CategoryType> eventTag, List<RegionType> regionTag) {
+    public Users(String username, String email, String principal, SocialType socialType, RoleType roleType, GenderType gender, LocalDateTime birthday, School school, Integer grade, MbtiType mbti, List<CategoryType> eventTag, List<RegionType> regionTag) {
         this.username = username;
         this.email = email;
         this.principal = principal;
@@ -78,6 +82,7 @@ public class Users extends BaseTimeEntity {
         this.birthday = birthday;
         this.school = school;
         this.grade = grade;
+        this.mbti = mbti;
         this.eventTag = eventTag;
         this.regionTag = regionTag;
     }
