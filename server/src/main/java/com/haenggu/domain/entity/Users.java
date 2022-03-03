@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.haenggu.domain.BaseTimeEntity;
 import com.haenggu.domain.enums.*;
-import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
@@ -51,8 +50,9 @@ public class Users extends BaseTimeEntity {
     @Column
     private LocalDateTime birthday;
 
-    @Column
-    private UUID deptId;
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinColumn(name = "dept_id")
+    private School school;
 
     @Column(length = 2)
     private Integer grade;
@@ -68,7 +68,7 @@ public class Users extends BaseTimeEntity {
     private List<RegionType> regionTag;
 
     @Builder
-    public Users(String username, String email, String principal, SocialType socialType, RoleType roleType, GenderType gender, LocalDateTime birthday, UUID deptId, Integer grade, List<CategoryType> eventTag, List<RegionType> regionTag) {
+    public Users(String username, String email, String principal, SocialType socialType, RoleType roleType, GenderType gender, LocalDateTime birthday, School school, Integer grade, List<CategoryType> eventTag, List<RegionType> regionTag) {
         this.username = username;
         this.email = email;
         this.principal = principal;
@@ -76,7 +76,7 @@ public class Users extends BaseTimeEntity {
         this.roleType = roleType;
         this.gender = gender;
         this.birthday = birthday;
-        this.deptId = deptId;
+        this.school = school;
         this.grade = grade;
         this.eventTag = eventTag;
         this.regionTag = regionTag;
