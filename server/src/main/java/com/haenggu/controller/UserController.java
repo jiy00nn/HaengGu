@@ -68,9 +68,9 @@ public class UserController {
     }
 
 
-    @Operation(summary = "회원 가입 유저 정보 추가", description = "회원 가입시 유저 정보를 추가합니다.", tags = "user",
+    @Operation(summary = "회원 가입된 유저 정보 수정", description = "유저 정보를 수정합니다.", tags = "user",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "행사 정보 수정 성공",
+                    @ApiResponse(responseCode = "200", description = "회원 정보 수정 성공",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class)))
             })
     @PatchMapping
@@ -83,12 +83,12 @@ public class UserController {
                 .school(schoolService.findSchoolById(signUpRequest.getDeptId()))
                 .gender(signUpRequest.getGender())
                 .grade(signUpRequest.getGrade())
+                .mbti(signUpRequest.getMbti())
                 .birthday(signUpRequest.getBirthday())
                 .eventTag(signUpRequest.getCategoryTag())
                 .regionTag(signUpRequest.getRegionTag())
                 .build();
-        UserResponse response = UserResponse.builder()
-                .user(userService.updateUser(idx,data)).build();
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(UserResponse.builder()
+                .user(userService.updateUser(idx,data)).build());
     }
 }

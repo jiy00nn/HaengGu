@@ -1,12 +1,12 @@
 package com.haenggu.http.response;
 
-import com.haenggu.domain.entity.School;
 import com.haenggu.domain.entity.Users;
 import com.haenggu.domain.enums.*;
 import lombok.Builder;
 import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class UserResponse {
@@ -19,8 +19,9 @@ public class UserResponse {
     private LocalDateTime birthday;
     private SchoolResponse school;
     private Integer grade;
-    private List<CategoryType> eventTag;
-    private List<RegionType> regionTag;
+    private MbtiType mbti;
+    private List<String> eventTag;
+    private List<String> regionTag;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
@@ -38,8 +39,13 @@ public class UserResponse {
                 .deptName(user.getSchool().getDeptName())
                 .build();
         this.grade = user.getGrade();
-        this.eventTag = user.getEventTag();
-        this.regionTag = user.getRegionTag();
+        this.mbti = user.getMbti();
+        this.eventTag = user.getEventTag().stream()
+                .map(CategoryType::getValue)
+                .collect(Collectors.toList());
+        this.regionTag = user.getRegionTag().stream()
+                .map(RegionType::getValue)
+                .collect(Collectors.toList());
         this.createdDate = user.getCreatedDate();
         this.modifiedDate = user.getModifiedDate();
     }

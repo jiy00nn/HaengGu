@@ -45,6 +45,9 @@ public class UserService {
         if(data.getGrade() != null) {
             user.setGrade(data.getGrade());
         }
+        if(data.getMbti() != null) {
+            user.setMbti(data.getMbti());
+        }
         if(data.getUsername() != null) {
             user.setUsername(data.getUsername());
         }
