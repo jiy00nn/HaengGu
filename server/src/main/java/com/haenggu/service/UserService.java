@@ -33,8 +33,8 @@ public class UserService {
         if(data.getBirthday() != null) {
             user.setBirthday(data.getBirthday());
         }
-        if(data.getDeptId() != null) {
-            user.setDeptId(data.getDeptId());
+        if(data.getSchool() != null) {
+            user.setSchool(data.getSchool());
         }
         if(data.getEmail() != null) {
             user.setEmail(data.getEmail());
