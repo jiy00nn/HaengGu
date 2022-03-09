@@ -1,5 +1,7 @@
 package com.haenggu.domain.entity;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.haenggu.domain.BaseTimeEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Board extends BaseTimeEntity implements Serializable {
     @Id
     @Column
@@ -25,7 +28,7 @@ public class Board extends BaseTimeEntity implements Serializable {
     @Column
     private String content;
 
-    @Column
+    @Column(name = "schedule")
     private LocalDateTime schedule;
 
     @ManyToOne
