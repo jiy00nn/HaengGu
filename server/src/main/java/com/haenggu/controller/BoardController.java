@@ -1,7 +1,6 @@
 package com.haenggu.controller;
 
 import com.haenggu.http.response.BoardListResponse;
-import com.haenggu.http.response.EventListResponse;
 import com.haenggu.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,10 +29,10 @@ public class BoardController {
     @Operation(summary = "전체 동행글 목록 조회", description = "전체 동행글 목록을 조회합니다.", tags = "board",
             responses = {
                     @ApiResponse(responseCode = "200", description = "전체 행사 목록 조회 성공",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = EventListResponse.class))),
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = BoardListResponse.class))),
             })
     @GetMapping
-    public ResponseEntity<?> getBoards(
+    public ResponseEntity<BoardListResponse> getBoards(
             @PageableDefault @SortDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(new BoardListResponse(pageable, boardService.findBoards(pageable)));
     }
