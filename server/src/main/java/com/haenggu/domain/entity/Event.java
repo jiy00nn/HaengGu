@@ -45,6 +45,9 @@ public class Event extends BaseTimeEntity {
     @Column(name = "reservation_ended_dt")
     private LocalDateTime reservationEndedDate;
 
+    @Column
+    private Integer time;
+
     @Column(length = 50, name = "event_location")
     private String eventLocation;
 

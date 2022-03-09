@@ -9,7 +9,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface UserRepository extends JpaRepository<Users, Long> {
-    Users getByUserId(UUID userId);
+public interface UserRepository extends JpaRepository<Users, UUID> {
     Optional<Users> findBySocialTypeAndPrincipal(SocialType socialType, String principal);
 }

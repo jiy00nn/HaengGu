@@ -75,6 +75,10 @@ public class Users extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Board> boards = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "user")
+    private UserImage image;
+
     @Builder
     public Users(String username, String email, String principal, SocialType socialType, RoleType roleType, GenderType gender, LocalDateTime birthday, School school, Integer grade, MbtiType mbti, List<CategoryType> eventTag, List<RegionType> regionTag) {
         this.username = username;

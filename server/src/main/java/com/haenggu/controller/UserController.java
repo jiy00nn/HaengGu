@@ -1,9 +1,12 @@
 package com.haenggu.controller;
 
 import com.haenggu.controller.examples.UserControllerExample;
+import com.haenggu.domain.entity.EventImage;
 import com.haenggu.domain.entity.School;
+import com.haenggu.domain.entity.UserImage;
 import com.haenggu.domain.entity.Users;
 import com.haenggu.http.request.SignUpRequest;
+import com.haenggu.http.response.UploadFileResponse;
 import com.haenggu.http.response.UserResponse;
 import com.haenggu.service.SchoolService;
 import com.haenggu.service.UserService;
@@ -16,10 +19,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.UUID;
@@ -73,5 +79,25 @@ public class UserController extends UserControllerExample {
                 .build();
         return ResponseEntity.ok(UserResponse.builder()
                 .user(userService.updateUser(idx,data)).build());
+    }
+
+    @PostMapping("/upload-image")
+    public ResponseEntity<UploadFileResponse> uploadFile(@RequestBody MultipartFile file) {
+        UserImage result = userService.storeFile(file);
+
+        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/api/users/profile")
+                .toUriString();
+
+        return ResponseEntity.ok(UploadFileResponse.builder()
+                .fileName(result.getOriginalName()).fileDownloadUri(fileDownloadUri)
+                .fileType(result.getMimetype()).size(result.getSize())
+                .build());
+    }
+
+    @GetMapping("/profile")
+    public @ResponseBody ResponseEntity<?> downloadFile(){
+        UserImage image = userService.loadFileAsByte();
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image.getData());
     }
 }
