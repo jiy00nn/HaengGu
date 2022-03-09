@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers( "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs").permitAll() // About Swagger UI
                 .antMatchers("/api/events/**").permitAll()
                 .antMatchers("/api/oauth/**").permitAll()
-                .antMatchers("/api/users/schools", "/api/users/majors").permitAll()
+                .antMatchers("/api/users/majors").permitAll()
                 .antMatchers("/api/users").hasAnyRole("GUEST", "USER")
                 .anyRequest().hasRole("USER")
 
