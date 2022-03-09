@@ -75,8 +75,8 @@ public class Users extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Board> boards = new ArrayList<>();
 
-    @OneToOne
-    @JoinColumn(name = "image_id")
+    @JsonIgnore
+    @OneToOne(mappedBy = "user")
     private UserImage image;
 
     @Builder

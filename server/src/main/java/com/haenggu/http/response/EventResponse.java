@@ -25,6 +25,7 @@ public class EventResponse {
     private LocalDateTime endedDate;
     private LocalDateTime reservationStartedDate;
     private LocalDateTime reservationEndedDate;
+    private Integer time;
     private String eventLocation;
     private CategoryType category;
     private RegionType region;
@@ -37,7 +38,7 @@ public class EventResponse {
 
     @Builder
     public EventResponse(UUID eventId, String title, String description, Integer favorite, LocalDateTime startedDate, LocalDateTime endedDate,
-                         LocalDateTime reservationStartedDate, LocalDateTime reservationEndedDate, String eventLocation,
+                         LocalDateTime reservationStartedDate, LocalDateTime reservationEndedDate, Integer time, String eventLocation,
                          CategoryType category, RegionType region, List<String> tag, List<String> imageUrl) {
         this.eventId = eventId;
         this.title = title;
@@ -47,6 +48,7 @@ public class EventResponse {
         this.endedDate = endedDate;
         this.reservationStartedDate = reservationStartedDate;
         this.reservationEndedDate = reservationEndedDate;
+        this.time = time;
         this.eventLocation = eventLocation;
         this.category = category;
         this.region = region;

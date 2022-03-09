@@ -1,6 +1,7 @@
 package com.haenggu.domain.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.minidev.json.annotate.JsonIgnore;
@@ -8,9 +9,8 @@ import net.minidev.json.annotate.JsonIgnore;
 import javax.persistence.*;
 import java.util.UUID;
 
-@Table
 @Getter
-@Entity
+@Entity @Table
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserImage {
     @Id
@@ -28,6 +28,17 @@ public class UserImage {
     @JsonIgnore
     private byte[] data;
 
-    @OneToOne(mappedBy = "image")
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "user_id")
     private Users user;
+
+    @Builder
+    public UserImage(String mimetype, String originalName, Long size, byte[] data, Users user) {
+        this.mimetype = mimetype;
+        this.originalName = originalName;
+        this.size = size;
+        this.data = data;
+        this.user = user;
+    }
 }

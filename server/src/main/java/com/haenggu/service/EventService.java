@@ -88,6 +88,9 @@ public class EventService {
         if(!Objects.isNull(event.getReservationEndedDate())) {
             persistEvent.setReservationEndedDate(event.getReservationEndedDate());
         }
+        if(!Objects.isNull(event.getTime())) {
+            persistEvent.setTime((event.getTime()));
+        }
         if(!Objects.isNull(event.getEventLocation())) {
             persistEvent.setEventLocation(event.getEventLocation());
         }
@@ -148,6 +151,7 @@ public class EventService {
                 .endedDate(event.getEndedDate())
                 .reservationStartedDate(event.getReservationStartedDate())
                 .reservationEndedDate(event.getReservationEndedDate())
+                .time(event.getTime())
                 .eventLocation(event.getEventLocation())
                 .category(event.getCategory())
                 .region(event.getRegion())

@@ -1,8 +1,11 @@
 package com.haenggu.service;
 
 import com.haenggu.auth.AccessTokenSocialTypeToken;
+import com.haenggu.domain.entity.UserImage;
 import com.haenggu.domain.entity.Users;
 import com.haenggu.domain.enums.RoleType;
+import com.haenggu.exception.FileStorageException;
+import com.haenggu.repository.UserImageRepository;
 import com.haenggu.repository.UserRepository;
 import com.haenggu.service.strategy.KakaoLoadStrategy;
 import com.haenggu.auth.OAuth2UserDetails;
@@ -10,26 +13,30 @@ import com.haenggu.service.strategy.SocialLoadStrategy;
 import com.haenggu.domain.enums.SocialType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     public UserRepository userRepository;
+    public UserImageRepository userImageRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserImageRepository userImageRepository) {
         this.userRepository = userRepository;
-    }
-
-    public Users getUser(UUID id) {
-        return userRepository.getByUserId(id);
+        this.userImageRepository = userImageRepository;
     }
 
     public Users updateUser(UUID id, Users data) {
-        Users user = userRepository.getByUserId(id);
+        Users user = userRepository.getById(id);
         if(data.getBirthday() != null) {
             user.setBirthday(data.getBirthday());
         }
@@ -79,5 +86,36 @@ public class UserService {
         } else {
             throw new IllegalArgumentException("지원하지 않는 로그인 형식입니다");
         }
+    }
+
+    public UserImage storeFile(MultipartFile file) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UUID userId = UUID.fromString(authentication.getPrincipal().toString());
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        try {
+            // Check if the file's name contains invalid characters
+            if(fileName.contains("..")) {
+                throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+            }
+
+            UserImage userImage =
+                    UserImage.builder()
+                            .user(userRepository.getById(userId))
+                            .mimetype(file.getContentType())
+                            .originalName(file.getOriginalFilename())
+                            .size(file.getSize())
+                            .data(file.getBytes())
+                            .build();
+
+            return userImageRepository.save(userImage);
+        } catch (IOException ex) {
+            throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
+        }
+    }
+
+    public UserImage loadFileAsByte() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UUID userId = UUID.fromString(authentication.getPrincipal().toString());
+        return userImageRepository.findUserImageByUser(userRepository.getById(userId));
     }
 }
