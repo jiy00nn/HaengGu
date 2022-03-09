@@ -1,5 +1,7 @@
 package com.haenggu.http.response;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.haenggu.domain.entity.Users;
 import com.haenggu.domain.enums.*;
 import lombok.Builder;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UserResponse {
     private String username;
     private String email;

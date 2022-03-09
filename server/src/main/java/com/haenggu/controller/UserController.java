@@ -1,9 +1,9 @@
 package com.haenggu.controller;
 
+import com.haenggu.controller.examples.UserControllerExample;
+import com.haenggu.domain.entity.School;
 import com.haenggu.domain.entity.Users;
 import com.haenggu.http.request.SignUpRequest;
-import com.haenggu.http.response.SchoolNameListResponse;
-import com.haenggu.http.response.SchoolListResponse;
 import com.haenggu.http.response.UserResponse;
 import com.haenggu.service.SchoolService;
 import com.haenggu.service.UserService;
@@ -11,24 +11,23 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "user", description = "사용자 정보 관련 API")
 @RestController
 @RequestMapping("/api/users")
-public class UserController {
+public class UserController extends UserControllerExample {
     UserService userService;
     SchoolService schoolService;
 
@@ -38,33 +37,17 @@ public class UserController {
         this.schoolService = schoolService;
     }
 
-    @Operation(summary = "학교 이름 검색", description = "문자열을 통해 학교 정보를 검색합니다", tags = "user",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "학교 이름 조회 성공",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = SchoolNameListResponse.class)))
-            })
-    @GetMapping("/schools")
-    public ResponseEntity<SchoolNameListResponse> getSchoolName(@PageableDefault(size = 20) @SortDefault(sort = "schoolName") Pageable pageable,
-                                                                @Parameter(name = "school-name", in = ParameterIn.QUERY, description = "학교 이름") @RequestParam(value = "school-name", required = false) String school){
-        if (school == null) {
-            return ResponseEntity.ok(new SchoolNameListResponse(pageable, schoolService.findSchoolNames(pageable)));
-        }
-        return ResponseEntity.ok(new SchoolNameListResponse(pageable, schoolService.findSchoolNamesByString(school, pageable)));
-    }
 
     @Operation(summary = "학과 이름 검색", description = "문자열을 통해 학과 정보를 검색합니다", tags = "user",
             responses = {
                     @ApiResponse(responseCode = "200", description = "학과 이름 조회 성공",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = SchoolListResponse.class)))
+                                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = List.class),
+                                 examples = @ExampleObject(value = MAJOR_SEARCH_SUCCESS)))
+
             })
     @GetMapping("/majors")
-    public ResponseEntity<SchoolListResponse> getMajorName(@PageableDefault(size = 20) Pageable pageable,
-                                                           @Parameter(name = "school-name", in = ParameterIn.QUERY, description = "학교 이름") @RequestParam(value = "school-name") String school,
-                                                           @Parameter(name = "major-name", in = ParameterIn.QUERY, description = "학과 이름") @RequestParam(value = "major-name", required = false) String major){
-        if (major == null) {
-            return ResponseEntity.ok(new SchoolListResponse(pageable, schoolService.findSchoolBySchoolName(school, pageable)));
-        }
-        return ResponseEntity.ok(new SchoolListResponse(pageable, schoolService.findSchoolBySchoolNameAndMajorName(school, major, pageable)));
+    public ResponseEntity<List<School>> getMajorName(@Parameter(name = "school-name", in = ParameterIn.QUERY, description = "학교 이름") @RequestParam(value = "school-name") String school){
+        return ResponseEntity.ok(schoolService.findSchoolBySchoolNameAndMajorName(school));
     }
 
 
