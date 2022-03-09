@@ -81,6 +81,11 @@ public class UserController extends UserControllerExample {
                 .user(userService.updateUser(idx,data)).build());
     }
 
+    @Operation(summary = "사용자 프로필 사진 등록", description = "사용자의 프로필 사진을 등록합니다.", tags = "user",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "사용자 프로필 이미지 등록 성공",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UploadFileResponse.class)))
+            })
     @PostMapping("/upload-image")
     public ResponseEntity<UploadFileResponse> uploadFile(@RequestBody MultipartFile file) {
         UserImage result = userService.storeFile(file);
@@ -95,6 +100,12 @@ public class UserController extends UserControllerExample {
                 .build());
     }
 
+    @Operation(summary = "사용자 프로필 이미지 조회", description = "토큰을 이용하여 사용자 프로필 사진을 조회합니다.", tags = "user",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "사용자 프로필 이미지 조회 성공",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = byte.class),
+                                    examples = @ExampleObject(value = "byte value")))
+            })
     @GetMapping("/profile")
     public @ResponseBody ResponseEntity<?> downloadFile(){
         UserImage image = userService.loadFileAsByte();
