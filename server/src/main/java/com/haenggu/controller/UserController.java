@@ -111,4 +111,16 @@ public class UserController extends UserControllerExample {
         UserImage image = userService.loadFileAsByte();
         return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image.getData());
     }
+
+    @Operation(summary = "사용자 프로필 이미지 조회", description = "사용자 프로필 이미지 ID 값을 통해 조회를 합니다.", tags = "user",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "사용자 프로필 이미지 조회 성공",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = byte.class),
+                                    examples = @ExampleObject(value = "byte value")))
+            })
+    @GetMapping("/profile/{idx}")
+    public @ResponseBody ResponseEntity<?> userImage(@PathVariable("idx") UUID id){
+        UserImage image = userService.loadFileAsByte(id);
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image.getData());
+    }
 }

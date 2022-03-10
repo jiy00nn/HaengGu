@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Service
 public class BoardService {
@@ -24,6 +25,10 @@ public class BoardService {
     }
 
     private BoardResponse makeBoardResponse(Board board) {
+        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                                .path("/api/users/profile/")
+                                .path(board.getUser().getImage().getImageId().toString())
+                                .toUriString();
         return BoardResponse.builder()
                 .title(board.getTitle())
                 .content(board.getContent())
@@ -32,7 +37,7 @@ public class BoardService {
                 .modifiedDate(board.getModifiedDate())
                 .user(UserSimpleResponse.builder()
                         .username(board.getUser().getUsername())
-                        .profileImage("https://i.pinimg.com/564x/74/a6/45/74a6450314023cf8da27275241ee8ad8.jpg").build())
+                        .profileImage(fileDownloadUri).build())
                 .build();
     }
 }
