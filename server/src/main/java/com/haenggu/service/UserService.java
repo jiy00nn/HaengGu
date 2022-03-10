@@ -118,4 +118,8 @@ public class UserService {
         UUID userId = UUID.fromString(authentication.getPrincipal().toString());
         return userImageRepository.findUserImageByUser(userRepository.getById(userId));
     }
+
+    public UserImage loadFileAsByte(UUID id) {
+        return userImageRepository.getById(id);
+    }
 }
