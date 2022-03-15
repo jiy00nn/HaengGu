@@ -9,7 +9,7 @@ import com.haenggu.domain.enums.RegionType;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 import java.util.List;
 
@@ -22,12 +22,12 @@ public class SignUpRequest {
     private final GenderType gender;
     private final Integer grade;
     private final MbtiType mbti;
-    private final LocalDateTime birthday;
+    private final LocalDate birthday;
     private final List<CategoryType> categoryTag;
     private final List<RegionType> regionTag;
 
     @Builder
-    public SignUpRequest(String username, String email, UUID deptId, GenderType gender, Integer grade, MbtiType mbti,LocalDateTime birthday, List<CategoryType> categoryTag, List<RegionType> regionTag) {
+    public SignUpRequest(String username, String email, UUID deptId, GenderType gender, Integer grade, MbtiType mbti,LocalDate birthday, List<CategoryType> categoryTag, List<RegionType> regionTag) {
         this.username = username;
         this.email = email;
         this.deptId = deptId;
