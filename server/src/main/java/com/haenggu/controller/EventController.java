@@ -84,6 +84,17 @@ public class EventController extends EventControllerExample {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "행사 태그 정보 조회", description = "행사의 태그 정보를 조회합니다.", tags = "event",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "행사 태그 정보 조회 성공",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = List.class),
+                            examples = @ExampleObject(value = EVENT_TAG_LIST))),
+            })
+    @GetMapping(value = "/tags", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getTags() {
+        return ResponseEntity.ok(eventService.getTagList());
+    }
+
     @Operation(summary = "행사 정보 등록", description = "새로운 행사 정보를 등록합니다.", tags = "event",
                responses = {
                     @ApiResponse(responseCode = "201", description = "행사 정보 등록 성공",

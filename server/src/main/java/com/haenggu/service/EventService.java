@@ -54,6 +54,10 @@ public class EventService {
         return events.map(event -> makeEventResponse(event, favorite));
     }
 
+    public List<String> getTagList() {
+        return eventRepository.getTagList();
+    }
+
     public EventResponse findById(UUID idx) {
         Event event = eventRepository.getEventByEventId(idx);
         return makeEventResponse(event, favorite);
