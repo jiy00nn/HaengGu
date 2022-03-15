@@ -9,5 +9,4 @@ import java.util.UUID;
 
 public interface BoardRepository extends JpaRepository<Board, UUID> {
     Optional<Board> findBoardByBoardIdAndUser(UUID id, Users user);
-    Board getByBoardIdAndUser(UUID id, Users users);
 }
