@@ -6,6 +6,7 @@ import com.haenggu.domain.entity.Users;
 import com.haenggu.domain.enums.*;
 import lombok.Builder;
 import lombok.Getter;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ public class UserResponse {
     private SocialType socialType;
     private RoleType roleType;
     private GenderType gender;
-    private LocalDateTime birthday;
+    private LocalDate birthday;
     private SchoolResponse school;
     private Integer grade;
     private MbtiType mbti;
