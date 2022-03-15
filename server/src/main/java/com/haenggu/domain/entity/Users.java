@@ -8,10 +8,11 @@ import com.haenggu.domain.enums.*;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -49,7 +50,7 @@ public class Users extends BaseTimeEntity {
     private GenderType gender;
 
     @Column
-    private LocalDateTime birthday;
+    private LocalDate birthday;
 
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "dept_id")
@@ -79,8 +80,22 @@ public class Users extends BaseTimeEntity {
     @OneToOne(mappedBy = "user")
     private UserImage image;
 
+    public List<String> getUserTags() {
+        LocalDate now = LocalDate.now();
+        List<String> tags = new ArrayList<String>();
+        tags.add(this.gender.getValue());
+        tags.add(String.valueOf(now.getYear() - birthday.getYear() + 1) + "살");
+        tags.add(this.getSchool().getSchoolName());
+        tags.add(this.getSchool().getDeptName());
+        tags.add(this.grade.toString() + "학년");
+        tags.add(this.mbti.getValue());
+        tags.addAll(this.eventTag.stream().map(CategoryType::getValue).collect(Collectors.toList()));
+        tags.addAll(this.regionTag.stream().map(RegionType::getValue).collect(Collectors.toList()));
+        return tags;
+    }
+
     @Builder
-    public Users(String username, String email, String principal, SocialType socialType, RoleType roleType, GenderType gender, LocalDateTime birthday, School school, Integer grade, MbtiType mbti, List<CategoryType> eventTag, List<RegionType> regionTag) {
+    public Users(String username, String email, String principal, SocialType socialType, RoleType roleType, GenderType gender, LocalDate birthday, School school, Integer grade, MbtiType mbti, List<CategoryType> eventTag, List<RegionType> regionTag) {
         this.username = username;
         this.email = email;
         this.principal = principal;
