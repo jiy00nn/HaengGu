@@ -2,13 +2,18 @@ package com.haenggu.service;
 
 import com.haenggu.domain.entity.Board;
 import com.haenggu.domain.entity.Users;
+import com.haenggu.http.request.BoardRequest;
 import com.haenggu.http.response.BoardDetailResponse;
 import com.haenggu.http.response.BoardResponse;
 import com.haenggu.http.response.UserSimpleResponse;
 import com.haenggu.repository.BoardRepository;
+import com.haenggu.repository.EventRepository;
+import com.haenggu.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -16,10 +21,14 @@ import java.util.UUID;
 
 @Service
 public class BoardService {
+    private final UserRepository userRepository;
+    private final EventRepository eventRepository;
     private final BoardRepository boardRepository;
 
     @Autowired
-    public BoardService(BoardRepository boardRepository) {
+    public BoardService(UserRepository userRepository, EventRepository eventRepository, BoardRepository boardRepository) {
+        this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
         this.boardRepository = boardRepository;
     }
 
@@ -32,12 +41,24 @@ public class BoardService {
         return makeBoardDetailsResponse(boardRepository.getById(id));
     }
 
+    public void saveBoard(BoardRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Board board = Board.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .schedule(request.getSchedule())
+                .event(eventRepository.getEventByEventId(request.getEventId()))
+                .user(userRepository.getById(UUID.fromString(authentication.getPrincipal().toString())))
+                .build();
+        boardRepository.save(board);
+    }
+
     private BoardResponse makeBoardResponse(Board board) {
         return BoardResponse.builder()
                 .id(board.getBoardId().toString())
                 .title(board.getTitle())
                 .content(board.getContent())
-                .schedule(board.getSchedule().toLocalDate())
+                .schedule(board.getSchedule())
                 .createdDate(board.getCreatedDate())
                 .modifiedDate(board.getModifiedDate())
                 .user(UserSimpleResponse.builder()
@@ -51,7 +72,7 @@ public class BoardService {
                 .id(board.getBoardId().toString())
                 .title(board.getTitle())
                 .content(board.getContent())
-                .schedule(board.getSchedule().toLocalDate())
+                .schedule(board.getSchedule())
                 .isFavorite(false)
                 .build();
         response.setConcert(board.getEvent().getEventId().toString(), board.getEvent().getTitle());

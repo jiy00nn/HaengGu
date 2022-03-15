@@ -1,12 +1,16 @@
 package com.haenggu.controller;
 
+import com.haenggu.controller.examples.BoardControllerExample;
+import com.haenggu.http.request.BoardRequest;
 import com.haenggu.http.response.BoardDetailResponse;
 import com.haenggu.http.response.BoardListResponse;
+import com.haenggu.http.response.GeneralResponse;
 import com.haenggu.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,18 +19,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @Tag(name = "board", description = "동행글 정보 관련 API")
 @RestController
 @RequestMapping("/api/boards")
-public class BoardController {
+public class BoardController extends BoardControllerExample {
     private final BoardService boardService;
 
     @Autowired
@@ -53,5 +55,18 @@ public class BoardController {
             @Parameter(name = "idx", in = ParameterIn.PATH, description = "조회할 동행글의 아이디") @PathVariable("idx") UUID idx
     ) {
         return ResponseEntity.ok(boardService.findBoard(idx));
+    }
+
+    @Operation(summary = "동행글 등록", description = "새로운 동행글을 등록합니다.", tags = "board",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "동행글 정보 등록 성공",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = GeneralResponse.class),
+                            examples = @ExampleObject(value = BOARD_POST_SUCCESS)))
+            })
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @PostMapping
+    public ResponseEntity<GeneralResponse> postBoard(@RequestBody BoardRequest request) {
+        boardService.saveBoard(request);
+        return new ResponseEntity<>(GeneralResponse.of(HttpStatus.CREATED, "동행글 등록에 성공하였습니다."), HttpStatus.CREATED);
     }
 }
