@@ -40,6 +40,22 @@ public class Board extends BaseTimeEntity implements Serializable {
     @JoinColumn(name = "user_id")
     private Users user;
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setSchedule(LocalDate schedule) {
+        this.schedule = schedule;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+
     @Builder
     public Board(String title, String content, LocalDate schedule, Event event, Users user) {
         this.title = title;

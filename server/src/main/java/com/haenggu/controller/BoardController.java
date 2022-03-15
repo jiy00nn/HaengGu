@@ -45,6 +45,19 @@ public class BoardController extends BoardControllerExample {
         return ResponseEntity.ok(new BoardListResponse(pageable, boardService.findBoards(pageable)));
     }
 
+    @Operation(summary = "동행글 등록", description = "새로운 동행글을 등록합니다.", tags = "board",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "동행글 정보 등록 성공",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = GeneralResponse.class),
+                            examples = @ExampleObject(value = BOARD_POST_SUCCESS)))
+            })
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @PostMapping
+    public ResponseEntity<GeneralResponse> postBoard(@RequestBody BoardRequest request) {
+        boardService.saveBoard(request);
+        return new ResponseEntity<>(GeneralResponse.of(HttpStatus.CREATED, "동행글 등록에 성공하였습니다."), HttpStatus.CREATED);
+    }
+
     @Operation(summary = "동행글 상세 조회", description = "동행글의 ID 값을 이용하여 동행글의 상세 내용을 조회합니다.", tags = "board",
             responses = {
                     @ApiResponse(responseCode = "200", description = "동행글 조회 성공",
@@ -57,16 +70,18 @@ public class BoardController extends BoardControllerExample {
         return ResponseEntity.ok(boardService.findBoard(idx));
     }
 
-    @Operation(summary = "동행글 등록", description = "새로운 동행글을 등록합니다.", tags = "board",
+    @Operation(summary = "동행글 수정", description = "동행글을 수정합니다. 동행글을 수정할 때 행사 아이디 값이 필수로 입력되어야 합니다.", tags = "board",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "동행글 정보 등록 성공",
+                    @ApiResponse(responseCode = "200", description = "동행글 정보 수정 성공",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = GeneralResponse.class),
-                            examples = @ExampleObject(value = BOARD_POST_SUCCESS)))
+                                    examples = @ExampleObject(value = BOARD_PUT_SUCCESS)))
             })
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @PostMapping
-    public ResponseEntity<GeneralResponse> postBoard(@RequestBody BoardRequest request) {
-        boardService.saveBoard(request);
-        return new ResponseEntity<>(GeneralResponse.of(HttpStatus.CREATED, "동행글 등록에 성공하였습니다."), HttpStatus.CREATED);
+    @PutMapping("/{idx}")
+    public ResponseEntity<GeneralResponse> patchBoard(
+            @Parameter(name = "idx", in = ParameterIn.PATH, description = "조회할 동행글의 아이디") @PathVariable("idx") UUID idx,
+            @RequestBody BoardRequest request
+    ) {
+        boardService.updateBoard(idx, request);
+        return new ResponseEntity<>(GeneralResponse.of(HttpStatus.OK, "동행글 수정에 성공하였습니다."), HttpStatus.OK);
     }
 }

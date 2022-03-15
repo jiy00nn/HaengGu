@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -51,6 +52,22 @@ public class BoardService {
                 .user(userRepository.getById(UUID.fromString(authentication.getPrincipal().toString())))
                 .build();
         boardRepository.save(board);
+    }
+
+    public void updateBoard(UUID id, BoardRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Users user = userRepository.getById(UUID.fromString(authentication.getPrincipal().toString()));
+        Optional<Board> board = boardRepository.findBoardByBoardIdAndUser(id, user);
+        board.ifPresent(data -> {
+            if(request.getEventId() == null) {
+                throw new RuntimeException();
+            }
+            data.setEvent(eventRepository.getById(request.getEventId()));
+            data.setTitle(request.getTitle());
+            data.setContent(request.getContent());
+            data.setSchedule(request.getSchedule());
+            boardRepository.save(data);
+        });
     }
 
     private BoardResponse makeBoardResponse(Board board) {
