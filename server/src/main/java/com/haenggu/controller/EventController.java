@@ -77,7 +77,6 @@ public class EventController extends EventControllerExample {
                })
     @GetMapping(value = "/{idx}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EventDetailResponse> getEvent(@Parameter(name = "idx", in = ParameterIn.PATH, description = "행사 아이디") @PathVariable("idx") UUID idx) {
-        EventDetailResponse response = eventService.findById(idx);
         return ResponseEntity.ok(eventService.findById(idx));
     }
 
