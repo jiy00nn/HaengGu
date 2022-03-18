@@ -5,6 +5,7 @@ import com.haenggu.domain.entity.UserImage;
 import com.haenggu.domain.entity.Users;
 import com.haenggu.domain.enums.RoleType;
 import com.haenggu.exception.FileStorageException;
+import com.haenggu.http.response.UserResponse;
 import com.haenggu.repository.UserImageRepository;
 import com.haenggu.repository.UserRepository;
 import com.haenggu.service.strategy.KakaoLoadStrategy;
@@ -33,6 +34,19 @@ public class UserService {
     public UserService(UserRepository userRepository, UserImageRepository userImageRepository) {
         this.userRepository = userRepository;
         this.userImageRepository = userImageRepository;
+    }
+
+    public UserResponse getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Users user = userRepository.getById(UUID.fromString(authentication.getPrincipal().toString()));
+
+        return UserResponse.builder()
+                .imageId(user.getImage().getImageId())
+                .username(user.getUsername())
+                .description("공연 전에 카페 투어 다니는 거 좋아해요!")
+                .tags(user.getUserTags())
+                .boards(user.getBoards())
+                .build();
     }
 
     public Users updateUser(UUID id, Users data) {

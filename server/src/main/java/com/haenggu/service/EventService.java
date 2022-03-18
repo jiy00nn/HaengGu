@@ -5,6 +5,9 @@ import com.haenggu.domain.entity.EventImage;
 import com.haenggu.domain.enums.CategoryType;
 import com.haenggu.domain.enums.RegionType;
 import com.haenggu.exception.FileStorageException;
+import com.haenggu.http.response.BoardListResponse;
+import com.haenggu.http.response.BoardSimpleResponse;
+import com.haenggu.http.response.EventDetailResponse;
 import com.haenggu.http.response.EventResponse;
 import com.haenggu.repository.EventImageRepository;
 import com.haenggu.repository.EventRepository;
@@ -20,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class EventService {
@@ -58,9 +62,11 @@ public class EventService {
         return eventRepository.getTagList();
     }
 
-    public EventResponse findById(UUID idx) {
+    public EventDetailResponse findById(UUID idx) {
         Event event = eventRepository.getEventByEventId(idx);
-        return makeEventResponse(event, favorite);
+        EventDetailResponse response = makeEventDetailResponse(event, favorite);
+        response.setBoards(event.getBoards().stream().map(BoardSimpleResponse::new).collect(Collectors.toList()));
+        return response;
     }
 
     public Event save(Event event) {
@@ -147,6 +153,29 @@ public class EventService {
 
     public EventResponse makeEventResponse(Event event, Integer favorite) {
         EventResponse response = EventResponse.builder()
+                .eventId(event.getEventId())
+                .title(event.getTitle())
+                .description(event.getDescription())
+                .favorite(favorite)
+                .startedDate(event.getStartedDate())
+                .endedDate(event.getEndedDate())
+                .reservationStartedDate(event.getReservationStartedDate())
+                .reservationEndedDate(event.getReservationEndedDate())
+                .time(event.getTime())
+                .eventLocation(event.getEventLocation())
+                .category(event.getCategory())
+                .region(event.getRegion())
+                .tag(event.getTag())
+                .imageUrl(getImageUri(event.getImage()))
+                .build();
+
+        response.addTag(event.getRegion().getValue());
+
+        return response;
+    }
+
+    public EventDetailResponse makeEventDetailResponse(Event event, Integer favorite) {
+        EventDetailResponse response = EventDetailResponse.builder()
                 .eventId(event.getEventId())
                 .title(event.getTitle())
                 .description(event.getDescription())
