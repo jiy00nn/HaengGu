@@ -1,11 +1,11 @@
 package com.haenggu.controller;
 
 import com.haenggu.controller.examples.UserControllerExample;
-import com.haenggu.domain.entity.EventImage;
 import com.haenggu.domain.entity.School;
 import com.haenggu.domain.entity.UserImage;
 import com.haenggu.domain.entity.Users;
 import com.haenggu.http.request.SignUpRequest;
+import com.haenggu.http.response.GeneralResponse;
 import com.haenggu.http.response.UploadFileResponse;
 import com.haenggu.http.response.UserResponse;
 import com.haenggu.service.SchoolService;
@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -43,6 +44,16 @@ public class UserController extends UserControllerExample {
         this.schoolService = schoolService;
     }
 
+    @Operation(summary = "사용자 정보 조회", description = "사용자의 상세 정보를 조회합니다", tags = "user",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "사용자 정보 조회 성공",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class)))
+
+            })
+    @GetMapping
+    public ResponseEntity<UserResponse> getUserInfo() {
+        return ResponseEntity.ok(userService.getUser());
+    }
 
     @Operation(summary = "학과 이름 검색", description = "문자열을 통해 학과 정보를 검색합니다", tags = "user",
             responses = {
@@ -60,10 +71,10 @@ public class UserController extends UserControllerExample {
     @Operation(summary = "회원 가입된 유저 정보 수정", description = "유저 정보를 수정합니다.", tags = "user",
             responses = {
                     @ApiResponse(responseCode = "200", description = "회원 정보 수정 성공",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class)))
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = GeneralResponse.class)))
             })
     @PatchMapping
-    public ResponseEntity<UserResponse> patchUser(@RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<GeneralResponse> patchUser(@RequestBody SignUpRequest signUpRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UUID idx = UUID.fromString(authentication.getPrincipal().toString());
         Users data = Users.builder()
@@ -77,8 +88,8 @@ public class UserController extends UserControllerExample {
                 .eventTag(signUpRequest.getCategoryTag())
                 .regionTag(signUpRequest.getRegionTag())
                 .build();
-        return ResponseEntity.ok(UserResponse.builder()
-                .user(userService.updateUser(idx,data)).build());
+        userService.updateUser(idx,data);
+        return ResponseEntity.ok(GeneralResponse.of(HttpStatus.OK, "사용자 정보 수정에 성공하였습니다."));
     }
 
     @Operation(summary = "사용자 프로필 사진 등록", description = "사용자의 프로필 사진을 등록합니다.", tags = "user",

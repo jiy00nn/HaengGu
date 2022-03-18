@@ -5,10 +5,7 @@ import com.haenggu.domain.entity.Event;
 import com.haenggu.domain.entity.EventImage;
 import com.haenggu.domain.enums.CategoryType;
 import com.haenggu.domain.enums.RegionType;
-import com.haenggu.http.response.EventListResponse;
-import com.haenggu.http.response.EventResponse;
-import com.haenggu.http.response.GeneralResponse;
-import com.haenggu.http.response.UploadFileResponse;
+import com.haenggu.http.response.*;
 import com.haenggu.service.EventService;
 
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -76,12 +73,12 @@ public class EventController extends EventControllerExample {
     @Operation(summary = "행사 정보 상세 조회", description = "아이디를 통해 행사의 상세 정보를 조회합니다.", tags = "event",
                responses = {
                     @ApiResponse(responseCode = "200", description = "행사 상세 정보 조회 성공",
-                                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = EventResponse.class))),
+                                 content = @Content(mediaType = "application/json", schema = @Schema(implementation = EventDetailResponse.class))),
                })
     @GetMapping(value = "/{idx}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EventResponse> getEvent(@Parameter(name = "idx", in = ParameterIn.PATH, description = "행사 아이디") @PathVariable("idx") UUID idx) {
-        EventResponse response = eventService.findById(idx);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<EventDetailResponse> getEvent(@Parameter(name = "idx", in = ParameterIn.PATH, description = "행사 아이디") @PathVariable("idx") UUID idx) {
+        EventDetailResponse response = eventService.findById(idx);
+        return ResponseEntity.ok(eventService.findById(idx));
     }
 
     @Operation(summary = "행사 태그 정보 조회", description = "행사의 태그 정보를 조회합니다.", tags = "event",

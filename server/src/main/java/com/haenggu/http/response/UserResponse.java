@@ -2,55 +2,73 @@ package com.haenggu.http.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.haenggu.domain.entity.Users;
-import com.haenggu.domain.enums.*;
+import com.haenggu.domain.entity.Board;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UserResponse {
+    private String profileUri;
     private String username;
-    private String email;
-    private String principal;
-    private SocialType socialType;
-    private RoleType roleType;
-    private GenderType gender;
-    private LocalDate birthday;
-    private SchoolResponse school;
-    private Integer grade;
-    private MbtiType mbti;
-    private List<String> eventTag;
-    private List<String> regionTag;
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
+    private String description;
+    private List<String> tags;
+    private List<BoardResponse> boards;
+    private List<EventResponse> events;
 
     @Builder
-    public UserResponse(Users user) {
-        this.username = user.getUsername();
-        this.email = user.getEmail();
-        this.principal = user.getPrincipal();
-        this.socialType = user.getSocialType();
-        this.roleType = user.getRoleType();
-        this.gender = user.getGender();
-        this.birthday = user.getBirthday();
-        this.school = SchoolResponse.builder()
-                .schoolName(user.getSchool().getSchoolName())
-                .deptName(user.getSchool().getDeptName())
+    public UserResponse(UUID imageId, String username, String description, List<String> tags, List<Board> boards) {
+        this.profileUri = makeProfileUri(imageId);
+        this.username = username;
+        this.description = description;
+        this.tags = tags;;
+        this.boards = boards.stream().map(this::makeBoardResponse).collect(Collectors.toList());
+        List<EventResponse> event = new ArrayList<>();
+        event.add(new EventResponse());
+        event.add(new EventResponse());
+        this.events = event;
+    }
+
+    @Getter
+    private class EventResponse {
+        String eventImageUri;
+        String title;
+        LocalDate startedDate;
+        LocalDate endedDate;
+
+        public EventResponse() {
+            this.eventImageUri = "https://i.imgur.com/g9xOODy.png";
+            this.title = "옥상달빛 연말 단독 공연［수고했어，올해도 2021］";
+            this.startedDate = LocalDate.of(2021,12,10);
+            this.endedDate = LocalDate.of(2021,12,12);
+        }
+    }
+
+    private BoardResponse makeBoardResponse(Board board) {
+        return BoardResponse.builder()
+                .id(board.getBoardId().toString())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .schedule(board.getSchedule())
+                .createdDate(board.getCreatedDate())
+                .modifiedDate(board.getModifiedDate())
+                .user(UserSimpleResponse.builder()
+                        .username(board.getUser().getUsername())
+                        .profileImage(makeProfileUri(board.getUser().getImage().getImageId())).build())
                 .build();
-        this.grade = user.getGrade();
-        this.mbti = user.getMbti();
-        this.eventTag = user.getEventTag().stream()
-                .map(CategoryType::getValue)
-                .collect(Collectors.toList());
-        this.regionTag = user.getRegionTag().stream()
-                .map(RegionType::getValue)
-                .collect(Collectors.toList());
-        this.createdDate = user.getCreatedDate();
-        this.modifiedDate = user.getModifiedDate();
+    }
+
+    private String makeProfileUri(UUID id) {
+        return ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/api/users/profile/")
+                .path(id.toString())
+                .toUriString();
     }
 }

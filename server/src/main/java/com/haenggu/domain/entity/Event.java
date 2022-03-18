@@ -8,6 +8,8 @@ import com.haenggu.domain.enums.CategoryType;
 import com.haenggu.domain.enums.RegionType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 
 import javax.persistence.*;
@@ -67,6 +69,10 @@ public class Event extends BaseTimeEntity {
     @JoinColumn(name = "event_id")
     @JsonIgnore
     private List<EventImage> image;
+
+    @OneToMany(mappedBy = "event")
+    @NotFound(action= NotFoundAction.IGNORE)
+    private List<Board> boards;
 
     @Builder
     public Event(String title, String description, LocalDateTime startedDate, LocalDateTime endedDate,
