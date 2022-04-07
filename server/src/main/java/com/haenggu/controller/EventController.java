@@ -31,11 +31,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-
-import java.util.Arrays;
 import java.util.UUID;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Tag(name = "event", description = "행사 정보 관련 API")
 @Tag(name = "event like", description = "행사 좋아요 관련 API")
@@ -147,7 +144,7 @@ public class EventController extends EventControllerExample {
 
     @Operation(summary = "좋아요 추가", description = "행사에 좋아요를 추가합니다.", tags = "event like",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "피드 좋아요 추가 성공",
+                    @ApiResponse(responseCode = "201", description = "행사 좋아요 추가 성공",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = GeneralResponse.class)))
             }
     )
