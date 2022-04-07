@@ -2,18 +2,22 @@ package com.haenggu.service;
 
 import com.haenggu.domain.entity.Event;
 import com.haenggu.domain.entity.EventImage;
+import com.haenggu.domain.entity.EventLike;
+import com.haenggu.domain.entity.Users;
 import com.haenggu.domain.enums.CategoryType;
 import com.haenggu.domain.enums.RegionType;
 import com.haenggu.exception.FileStorageException;
-import com.haenggu.http.response.BoardListResponse;
 import com.haenggu.http.response.BoardSimpleResponse;
 import com.haenggu.http.response.EventDetailResponse;
 import com.haenggu.http.response.EventResponse;
 import com.haenggu.repository.EventImageRepository;
+import com.haenggu.repository.EventLikeRepository;
 import com.haenggu.repository.EventRepository;
-import io.swagger.models.auth.In;
+import com.haenggu.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,14 +31,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class EventService {
+    private final UserRepository userRepository;
     private final EventRepository eventRepository;
+    private final EventLikeRepository eventLikeRepository;
     private final EventImageRepository eventImageRepository;
 
     private static final Integer favorite = 10;
 
     @Autowired
-    public EventService(EventRepository eventRepository, EventImageRepository eventImageRepository) {
+    public EventService(UserRepository userRepository, EventRepository eventRepository, EventLikeRepository eventLikeRepository, EventImageRepository eventImageRepository) {
+        this.userRepository = userRepository;
         this.eventRepository = eventRepository;
+        this.eventLikeRepository = eventLikeRepository;
         this.eventImageRepository = eventImageRepository;
     }
 
@@ -58,6 +66,13 @@ public class EventService {
         return events.map(event -> makeEventResponse(event, favorite));
     }
 
+    public Page<EventResponse> findEventsLike(Pageable pageable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Users user = userRepository.getById(UUID.fromString(authentication.getPrincipal().toString()));
+        Page<Event> events = eventRepository.findEventByUser(user.getUserId(), pageable);
+        return events.map(event -> makeEventResponse(event, favorite));
+    }
+
     public List<String> getTagList() {
         return eventRepository.getTagList();
     }
@@ -71,6 +86,18 @@ public class EventService {
 
     public Event save(Event event) {
         return eventRepository.save(event);
+    }
+
+    public void saveEventLike(UUID id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Users user = userRepository.getById(UUID.fromString(authentication.getPrincipal().toString()));
+        eventLikeRepository.save(EventLike.builder().event(eventRepository.getById(id)).user(user).build());
+    }
+
+    public void deleteEventLike(UUID id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Users user = userRepository.getById(UUID.fromString(authentication.getPrincipal().toString()));
+        eventLikeRepository.delete(eventLikeRepository.findEventLikeByUserAndEvent(user, eventRepository.getById(id)).get());
     }
 
     @Transactional

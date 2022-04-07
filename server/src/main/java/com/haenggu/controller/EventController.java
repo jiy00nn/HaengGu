@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Tag(name = "event", description = "행사 정보 관련 API")
+@Tag(name = "event like", description = "행사 좋아요 관련 API")
 @RestController
 @RequestMapping("/api/events")
 public class EventController extends EventControllerExample {
@@ -129,6 +131,52 @@ public class EventController extends EventControllerExample {
     public  ResponseEntity<GeneralResponse> deleteBoard(@Parameter(name = "idx", in = ParameterIn.PATH, description = "삭제할 행사의 아이디") @PathVariable("idx")UUID idx) {
         eventService.deleteById(idx);
         return new ResponseEntity<>(GeneralResponse.of(HttpStatus.OK, "행사 정보 삭제 성공"), HttpStatus.OK);
+    }
+
+    @Operation(summary = "행사 좋아요 기록 조회", description = "행사의 좋아요 기록을 조회합니다.", tags = "event like",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "행사 좋아요 기록 조회 성공",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = EventListResponse.class)))
+            })
+    @GetMapping(value = "/likes")
+    public ResponseEntity<?> getLike(
+            @PageableDefault @SortDefault(sort = "created_dt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ResponseEntity.ok(new EventListResponse(pageable, eventService.findEventsLike(pageable)));
+    }
+
+    @Operation(summary = "좋아요 추가", description = "행사에 좋아요를 추가합니다.", tags = "event like",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "피드 좋아요 추가 성공",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = GeneralResponse.class)))
+            }
+    )
+    @ResponseStatus(value = HttpStatus.CREATED)
+    @PostMapping(value = "/{idx}/likes", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GeneralResponse> postLike(
+            @Parameter(name = "idx", in = ParameterIn.PATH, description = "좋아요를 추가할 이벤트의 아이디") @PathVariable("idx") UUID id
+    ){
+        try{
+            eventService.saveEventLike(id);
+            return new ResponseEntity<>(GeneralResponse.of(HttpStatus.CREATED, "좋아요 추가에 성공하였습니다."), HttpStatus.CREATED);
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>(GeneralResponse.of(HttpStatus.BAD_REQUEST, "이미 추가된 좋아요 데이터입니다."), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Operation(summary = "좋아요 삭제", description = "피드의 좋아요를 삭제합니다.", tags = "event like",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "피드 좋아요 삭제 성공",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = GeneralResponse.class)))
+            }
+    )
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @DeleteMapping(value = "/{idx}/likes", produces = MediaType.APPLICATION_JSON_VALUE) 
+    public ResponseEntity<GeneralResponse> deleteLike(
+            @Parameter(name = "idx", in = ParameterIn.PATH, description = "좋아요를 삭제할 이벤트의 아이디") @PathVariable("idx") UUID id
+    ) {
+        eventService.deleteEventLike(id);
+        return new ResponseEntity<>(GeneralResponse.of(HttpStatus.NO_CONTENT, "좋아요 삭제에 성공하였습니다."), HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "행사 이미지 등록", description = "행사의 이미지를 등록합니다.", tags = "event",
