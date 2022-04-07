@@ -80,6 +80,7 @@ public class UserController extends UserControllerExample {
         Users data = Users.builder()
                 .username(signUpRequest.getUsername())
                 .email(signUpRequest.getEmail())
+                .description(signUpRequest.getDescription())
                 .school(schoolService.findSchoolById(signUpRequest.getDeptId()))
                 .gender(signUpRequest.getGender())
                 .grade(signUpRequest.getGrade())

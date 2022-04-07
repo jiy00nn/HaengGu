@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -16,39 +14,21 @@ import java.util.stream.Collectors;
 @Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UserResponse {
-    private String profileUri;
-    private String username;
-    private String description;
-    private List<String> tags;
-    private List<BoardResponse> boards;
-    private List<EventResponse> events;
+    private final String profileUri;
+    private final String username;
+    private final String description;
+    private final List<String> tags;
+    private final List<BoardResponse> boards;
+    private final List<EventSimpleResponse> events;
 
     @Builder
-    public UserResponse(UUID imageId, String username, String description, List<String> tags, List<Board> boards) {
+    public UserResponse(UUID imageId, String username, String description, List<String> tags, List<Board> boards, List<EventSimpleResponse> events) {
         this.profileUri = makeProfileUri(imageId);
         this.username = username;
         this.description = description;
-        this.tags = tags;;
+        this.tags = tags;
         this.boards = boards.stream().map(this::makeBoardResponse).collect(Collectors.toList());
-        List<EventResponse> event = new ArrayList<>();
-        event.add(new EventResponse());
-        event.add(new EventResponse());
-        this.events = event;
-    }
-
-    @Getter
-    private class EventResponse {
-        String eventImageUri;
-        String title;
-        LocalDate startedDate;
-        LocalDate endedDate;
-
-        public EventResponse() {
-            this.eventImageUri = "https://i.imgur.com/g9xOODy.png";
-            this.title = "옥상달빛 연말 단독 공연［수고했어，올해도 2021］";
-            this.startedDate = LocalDate.of(2021,12,10);
-            this.endedDate = LocalDate.of(2021,12,12);
-        }
+        this.events = events;
     }
 
     private BoardResponse makeBoardResponse(Board board) {

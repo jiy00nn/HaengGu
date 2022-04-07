@@ -18,6 +18,7 @@ import java.util.List;
 public class SignUpRequest {
     private final String username;
     private final String email;
+    private final String description;
     private final UUID deptId;
     private final GenderType gender;
     private final Integer grade;
@@ -27,9 +28,10 @@ public class SignUpRequest {
     private final List<RegionType> regionTag;
 
     @Builder
-    public SignUpRequest(String username, String email, UUID deptId, GenderType gender, Integer grade, MbtiType mbti,LocalDate birthday, List<CategoryType> categoryTag, List<RegionType> regionTag) {
+    public SignUpRequest(String username, String email, String description, UUID deptId, GenderType gender, Integer grade, MbtiType mbti, LocalDate birthday, List<CategoryType> categoryTag, List<RegionType> regionTag) {
         this.username = username;
         this.email = email;
+        this.description = description;
         this.deptId = deptId;
         this.gender = gender;
         this.grade = grade;

@@ -36,8 +36,6 @@ public class EventService {
     private final EventLikeRepository eventLikeRepository;
     private final EventImageRepository eventImageRepository;
 
-    private static final Integer favorite = 10;
-
     @Autowired
     public EventService(UserRepository userRepository, EventRepository eventRepository, EventLikeRepository eventLikeRepository, EventImageRepository eventImageRepository) {
         this.userRepository = userRepository;
@@ -48,29 +46,29 @@ public class EventService {
 
     public Page<EventResponse> findEvents(Pageable pageable) {
         Page<Event> events = eventRepository.findAll(pageable);
-        return events.map(event -> makeEventResponse(event, favorite));
+        return events.map(this::makeEventResponse);
     }
 
     public Page<EventResponse> findEvents(CategoryType categoryType, Pageable pageable) {
         Page<Event> events = eventRepository.findEventByCategory(categoryType, pageable);
-        return events.map(event -> makeEventResponse(event, favorite));
+        return events.map(this::makeEventResponse);
     }
 
     public Page<EventResponse> findEvents(RegionType regionType, Pageable pageable) {
         Page<Event> events = eventRepository.findEventByRegion(regionType, pageable);
-        return events.map(event -> makeEventResponse(event, favorite));
+        return events.map(this::makeEventResponse);
     }
 
     public Page<EventResponse> findEvents(CategoryType categoryType,RegionType regionType, Pageable pageable) {
         Page<Event> events = eventRepository.findEventByCategoryAndRegion(categoryType, regionType, pageable);
-        return events.map(event -> makeEventResponse(event, favorite));
+        return events.map(this::makeEventResponse);
     }
 
     public Page<EventResponse> findEventsLike(Pageable pageable) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Users user = userRepository.getById(UUID.fromString(authentication.getPrincipal().toString()));
         Page<Event> events = eventRepository.findEventByUser(user.getUserId(), pageable);
-        return events.map(event -> makeEventResponse(event, favorite));
+        return events.map(this::makeEventResponse);
     }
 
     public List<String> getTagList() {
@@ -79,7 +77,7 @@ public class EventService {
 
     public EventDetailResponse findById(UUID idx) {
         Event event = eventRepository.getEventByEventId(idx);
-        EventDetailResponse response = makeEventDetailResponse(event, favorite);
+        EventDetailResponse response = makeEventDetailResponse(event);
         response.setBoards(event.getBoards().stream().map(BoardSimpleResponse::new).collect(Collectors.toList()));
         return response;
     }
@@ -178,12 +176,16 @@ public class EventService {
         return eventImageRepository.getEventImageByImageId(imageId);
     }
 
-    public EventResponse makeEventResponse(Event event, Integer favorite) {
+    public Long countEventFavorite(UUID eventId) {
+        return eventLikeRepository.countEventLikeByUser(eventId);
+    }
+
+    public EventResponse makeEventResponse(Event event) {
         EventResponse response = EventResponse.builder()
                 .eventId(event.getEventId())
                 .title(event.getTitle())
                 .description(event.getDescription())
-                .favorite(favorite)
+                .favorite(countEventFavorite(event.getEventId()))
                 .startedDate(event.getStartedDate())
                 .endedDate(event.getEndedDate())
                 .reservationStartedDate(event.getReservationStartedDate())
@@ -201,12 +203,12 @@ public class EventService {
         return response;
     }
 
-    public EventDetailResponse makeEventDetailResponse(Event event, Integer favorite) {
+    public EventDetailResponse makeEventDetailResponse(Event event) {
         EventDetailResponse response = EventDetailResponse.builder()
                 .eventId(event.getEventId())
                 .title(event.getTitle())
                 .description(event.getDescription())
-                .favorite(favorite)
+                .favorite(countEventFavorite(event.getEventId()))
                 .startedDate(event.getStartedDate())
                 .endedDate(event.getEndedDate())
                 .reservationStartedDate(event.getReservationStartedDate())

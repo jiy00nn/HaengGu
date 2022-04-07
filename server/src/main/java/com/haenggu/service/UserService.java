@@ -1,10 +1,12 @@
 package com.haenggu.service;
 
 import com.haenggu.auth.AccessTokenSocialTypeToken;
+import com.haenggu.domain.entity.EventLike;
 import com.haenggu.domain.entity.UserImage;
 import com.haenggu.domain.entity.Users;
 import com.haenggu.domain.enums.RoleType;
 import com.haenggu.exception.FileStorageException;
+import com.haenggu.http.response.EventSimpleResponse;
 import com.haenggu.http.response.UserResponse;
 import com.haenggu.repository.UserImageRepository;
 import com.haenggu.repository.UserRepository;
@@ -17,12 +19,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,13 +44,24 @@ public class UserService {
     public UserResponse getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Users user = userRepository.getById(UUID.fromString(authentication.getPrincipal().toString()));
+        List<EventSimpleResponse> eventSimpleResponse = new ArrayList<>();
+
+        for(EventLike eventLike : user.getEventLikes()) {
+            eventSimpleResponse.add(new EventSimpleResponse(eventLike.getEvent()));
+        }
+
+        String description = "";
+        if(!ObjectUtils.isEmpty(user.getDescription())) {
+            description = user.getDescription();
+        }
 
         return UserResponse.builder()
                 .imageId(user.getImage().getImageId())
                 .username(user.getUsername())
-                .description("공연 전에 카페 투어 다니는 거 좋아해요!")
+                .description(description)
                 .tags(user.getUserTags())
                 .boards(user.getBoards())
+                .events(eventSimpleResponse)
                 .build();
     }
 
@@ -59,6 +75,9 @@ public class UserService {
         }
         if(data.getEmail() != null) {
             user.setEmail(data.getEmail());
+        }
+        if(data.getDescription() != null) {
+            user.setDescription(data.getDescription());
         }
         if(data.getGender() != null) {
             user.setGender(data.getGender());
