@@ -33,6 +33,9 @@ public class Users extends BaseTimeEntity {
     @Column(length = 50)
     private String email;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     // 소셜 로그인의 식별값
     @Column
     @JsonIgnore
@@ -76,6 +79,9 @@ public class Users extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Board> boards = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<EventLike> eventLikes = new ArrayList<>();
+
     @JsonIgnore
     @OneToOne(mappedBy = "user")
     private UserImage image;
@@ -95,9 +101,10 @@ public class Users extends BaseTimeEntity {
     }
 
     @Builder
-    public Users(String username, String email, String principal, SocialType socialType, RoleType roleType, GenderType gender, LocalDate birthday, School school, Integer grade, MbtiType mbti, List<CategoryType> eventTag, List<RegionType> regionTag) {
+    public Users(String username, String email, String description, String principal, SocialType socialType, RoleType roleType, GenderType gender, LocalDate birthday, School school, Integer grade, MbtiType mbti, List<CategoryType> eventTag, List<RegionType> regionTag) {
         this.username = username;
         this.email = email;
+        this.description = description;
         this.principal = principal;
         this.socialType = socialType;
         this.roleType = roleType;

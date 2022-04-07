@@ -18,7 +18,7 @@ public class EventDetailResponse {
     private UUID eventId;
     private String title;
     private String description;
-    private Integer favorite;
+    private Long favorite;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd", timezone = "Asia/Seoul")
     private LocalDateTime startedDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd", timezone = "Asia/Seoul")
@@ -42,7 +42,7 @@ public class EventDetailResponse {
     }
 
     @Builder
-    public EventDetailResponse(UUID eventId, String title, String description, Integer favorite, LocalDateTime startedDate, LocalDateTime endedDate,
+    public EventDetailResponse(UUID eventId, String title, String description, Long favorite, LocalDateTime startedDate, LocalDateTime endedDate,
                                LocalDateTime reservationStartedDate, LocalDateTime reservationEndedDate, Integer time, String eventLocation,
                                CategoryType category, RegionType region, List<String> tag, List<String> imageUrl) {
         this.eventId = eventId;
