@@ -6,31 +6,31 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.haenggu.domain.enums.CategoryType;
 import com.haenggu.domain.enums.RegionType;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-@Data
+@Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class EventResponse {
-    private UUID eventId;
-    private String title;
-    private String description;
-    private Integer favorite;
+    private final UUID eventId;
+    private final String title;
+    private final String description;
+    private final Integer favorite;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd", timezone = "Asia/Seoul")
-    private LocalDateTime startedDate;
+    private final LocalDateTime startedDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd", timezone = "Asia/Seoul")
-    private LocalDateTime endedDate;
-    private LocalDateTime reservationStartedDate;
-    private LocalDateTime reservationEndedDate;
-    private Integer time;
-    private String eventLocation;
-    private CategoryType category;
-    private RegionType region;
-    private List<String> tag;
-    private List<String> imageUrl;
+    private final LocalDateTime endedDate;
+    private final LocalDateTime reservationStartedDate;
+    private final LocalDateTime reservationEndedDate;
+    private final Integer time;
+    private final String eventLocation;
+    private final CategoryType category;
+    private final RegionType region;
+    private final List<String> tag;
+    private final List<String> imageUrl;
 
     public void addTag(String tag) {
         this.tag.add(tag);
