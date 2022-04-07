@@ -24,6 +24,12 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
     Page<Event> findEventByCategory(CategoryType category, Pageable pageable);
     Page<Event> findEventByRegion(RegionType region, Pageable pageable);
     Page<Event> findEventByCategoryAndRegion(CategoryType categoryType, RegionType regionType, Pageable pageable);
+    @Query(
+            value = "SELECT * FROM (event JOIN event_like el ON (event.event_id = el.event_id AND el.user_id = :idx))",
+            countQuery = "SELECT count(*) FROM event JOIN event_like el ON (event.event_id = el.event_id AND el.user_id = :idx)",
+            nativeQuery = true
+    )
+    Page<Event> findEventByUser(@Param("idx") UUID user_id, Pageable pageable);
     @Transactional
     void deleteEventByEventId(@Param("event_id") UUID idx);
 }

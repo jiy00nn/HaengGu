@@ -16,6 +16,7 @@ public class BoardResponse {
     private String id;
     private String title;
     private String content;
+    private String eventTitle;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd", timezone = "Asia/Seoul")
     private LocalDate schedule;
     private LocalDateTime createdDate;

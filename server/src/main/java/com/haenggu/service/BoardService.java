@@ -75,6 +75,7 @@ public class BoardService {
                 .id(board.getBoardId().toString())
                 .title(board.getTitle())
                 .content(board.getContent())
+                .eventTitle(board.getEvent().getTitle())
                 .schedule(board.getSchedule())
                 .createdDate(board.getCreatedDate())
                 .modifiedDate(board.getModifiedDate())
