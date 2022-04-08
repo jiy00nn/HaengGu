@@ -32,7 +32,7 @@ public class UserResponse {
     }
 
     private BoardResponse makeBoardResponse(Board board) {
-        return BoardResponse.builder()
+        BoardResponse response = BoardResponse.builder()
                 .id(board.getBoardId().toString())
                 .title(board.getTitle())
                 .content(board.getContent())
@@ -43,6 +43,9 @@ public class UserResponse {
                         .username(board.getUser().getUsername())
                         .profileImage(makeProfileUri(board.getUser().getImage().getImageId())).build())
                 .build();
+        response.setEvent(board.getEvent());
+
+        return response;
     }
 
     private String makeProfileUri(UUID id) {

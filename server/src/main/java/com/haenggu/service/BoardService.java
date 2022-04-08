@@ -100,11 +100,10 @@ public class BoardService {
             profileImage = makeProfileUri(board.getUser().getImage().getImageId());
         }
 
-        return BoardResponse.builder()
+        BoardResponse response = BoardResponse.builder()
                 .id(board.getBoardId().toString())
                 .title(board.getTitle())
                 .content(board.getContent())
-                .eventTitle(board.getEvent().getTitle())
                 .schedule(board.getSchedule())
                 .createdDate(board.getCreatedDate())
                 .modifiedDate(board.getModifiedDate())
@@ -112,6 +111,10 @@ public class BoardService {
                         .username(board.getUser().getUsername())
                         .profileImage(profileImage).build())
                 .build();
+
+        response.setEvent(board.getEvent());
+
+        return response;
     }
 
     private BoardDetailResponse makeBoardDetailsResponse(Board board) {
