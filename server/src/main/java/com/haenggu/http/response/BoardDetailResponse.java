@@ -25,14 +25,14 @@ public class BoardDetailResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd", timezone = "Asia/Seoul")
     private LocalDate schedule;
     @Schema(description = "동행글 관련 이벤트 정보")
-    private EventSimpleResponse event;
+    private BoardEventSimpleResponse event;
     @Schema(description = "동행글 작성자 정보")
     private UserTagsResponse user;
     @Schema(description = "동행글 즐겨찾기 여부", example = "false")
     private Boolean isFavorite;
 
     public void setConcert(String id, String title) {
-        this.event = new EventSimpleResponse(id, title);
+        this.event = new BoardEventSimpleResponse(id, title);
     }
 
     public void setUser(String id, String username, String profileImage, List<String> tags) {
@@ -41,7 +41,7 @@ public class BoardDetailResponse {
 
     @Getter
     @AllArgsConstructor
-    private static class EventSimpleResponse {
+    private static class BoardEventSimpleResponse {
         @Schema(description = "이벤트 ID", example = "ebafbf80-bd1c-4b82-a488-0394161b0cc4")
         private String id;
         @Schema(description = "이벤트 제목", example = "체리필터 연말 단독 콘서트 : Cherry Christmas")
