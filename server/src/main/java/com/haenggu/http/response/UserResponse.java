@@ -3,7 +3,7 @@ package com.haenggu.http.response;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.haenggu.domain.entity.Board;
-import com.haenggu.http.response.event.EventSimpleResponse;
+import com.haenggu.http.response.event.EventBasicResponse;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -20,10 +20,10 @@ public class UserResponse {
     private final String description;
     private final List<String> tags;
     private final List<BoardResponse> boards;
-    private final List<EventSimpleResponse> events;
+    private final List<EventBasicResponse> events;
 
     @Builder
-    public UserResponse(UUID imageId, String username, String description, List<String> tags, List<Board> boards, List<EventSimpleResponse> events) {
+    public UserResponse(UUID imageId, String username, String description, List<String> tags, List<Board> boards, List<EventBasicResponse> events) {
         this.profileUri = makeProfileUri(imageId);
         this.username = username;
         this.description = description;

@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.*;
@@ -77,9 +76,7 @@ public class EventService {
 
     public EventDetailResponse findById(UUID idx) {
         Event event = eventRepository.getEventByEventId(idx);
-        EventDetailResponse response = makeEventDetailResponse(event);
-        response.setBoards(event.getBoards().stream().map(BoardSimpleResponse::new).collect(Collectors.toList()));
-        return response;
+        return makeEventDetailResponse(event);
     }
 
     public Event save(Event event) {
@@ -181,62 +178,13 @@ public class EventService {
     }
 
     public EventResponse makeEventResponse(Event event) {
-        EventResponse response = EventResponse.builder()
-                .eventId(event.getEventId())
-                .title(event.getTitle())
-                .description(event.getDescription())
+        return EventResponse.builder()
+                .event(event)
                 .favorite(countEventFavorite(event.getEventId()))
-                .startedDate(event.getStartedDate())
-                .endedDate(event.getEndedDate())
-                .reservationStartedDate(event.getReservationStartedDate())
-                .reservationEndedDate(event.getReservationEndedDate())
-                .time(event.getTime())
-                .eventLocation(event.getEventLocation())
-                .category(event.getCategory())
-                .region(event.getRegion())
-                .tag(event.getTag())
-                .imageUrl(getImageUri(event.getImage()))
                 .build();
-
-        response.addTag(event.getRegion().getValue());
-
-        return response;
     }
 
     public EventDetailResponse makeEventDetailResponse(Event event) {
-        EventDetailResponse response = EventDetailResponse.builder()
-                .eventId(event.getEventId())
-                .title(event.getTitle())
-                .description(event.getDescription())
-                .favorite(countEventFavorite(event.getEventId()))
-                .startedDate(event.getStartedDate())
-                .endedDate(event.getEndedDate())
-                .reservationStartedDate(event.getReservationStartedDate())
-                .reservationEndedDate(event.getReservationEndedDate())
-                .time(event.getTime())
-                .eventLocation(event.getEventLocation())
-                .category(event.getCategory())
-                .region(event.getRegion())
-                .tag(event.getTag())
-                .imageUrl(getImageUri(event.getImage()))
-                .build();
-
-        response.addTag(event.getRegion().getValue());
-
-        return response;
-    }
-
-    public List<String> getImageUri(List<EventImage> eventImages) {
-        List<String> imageUrl = new ArrayList<>();
-
-        for (EventImage image : eventImages) {
-            String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/api/events/"+ image.getEventId() + "/image/")
-                    .path(image.getImageId().toString())
-                    .toUriString();
-            imageUrl.add(uri);
-        }
-
-        return imageUrl;
+        return new EventDetailResponse(event);
     }
 }

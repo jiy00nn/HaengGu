@@ -1,58 +1,30 @@
 package com.haenggu.http.response.event;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.haenggu.domain.enums.CategoryType;
-import com.haenggu.domain.enums.RegionType;
+import com.haenggu.domain.entity.Event;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class EventResponse {
-    private final UUID eventId;
-    private final String title;
+public class EventResponse extends EventBasicResponse {
     private final String description;
     private final Long favorite;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd", timezone = "Asia/Seoul")
-    private final LocalDateTime startedDate;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd", timezone = "Asia/Seoul")
-    private final LocalDateTime endedDate;
-    private final LocalDateTime reservationStartedDate;
-    private final LocalDateTime reservationEndedDate;
-    private final Integer time;
-    private final String eventLocation;
-    private final CategoryType category;
-    private final RegionType region;
     private final List<String> tag;
-    private final List<String> imageUrl;
 
-    public void addTag(String tag) {
-        this.tag.add(tag);
+    public EventResponse(Event event) {
+        this(event, Long.getLong(String.valueOf(0)));
     }
 
     @Builder
-    public EventResponse(UUID eventId, String title, String description, Long favorite, LocalDateTime startedDate, LocalDateTime endedDate,
-                         LocalDateTime reservationStartedDate, LocalDateTime reservationEndedDate, Integer time, String eventLocation,
-                         CategoryType category, RegionType region, List<String> tag, List<String> imageUrl) {
-        this.eventId = eventId;
-        this.title = title;
-        this.description = description;
+    public EventResponse(Event event, Long favorite) {
+        super(event.getEventId(), event.getTitle(), event.getStartedDate(), event.getEndedDate());
+        this.description = event.getDescription();
         this.favorite = favorite;
-        this.startedDate = startedDate;
-        this.endedDate = endedDate;
-        this.reservationStartedDate = reservationStartedDate;
-        this.reservationEndedDate = reservationEndedDate;
-        this.time = time;
-        this.eventLocation = eventLocation;
-        this.category = category;
-        this.region = region;
-        this.tag = tag;
-        this.imageUrl = imageUrl;
+        this.tag = event.getTag();
+        this.tag.add(event.getRegion().getValue());
     }
 }
