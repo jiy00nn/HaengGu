@@ -1,10 +1,11 @@
-package com.haenggu.http.response;
+package com.haenggu.http.response.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.haenggu.domain.enums.CategoryType;
 import com.haenggu.domain.enums.RegionType;
+import com.haenggu.http.response.BoardSimpleResponse;
 import lombok.Builder;
 import lombok.Data;
 

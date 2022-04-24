@@ -6,6 +6,9 @@ import com.haenggu.domain.entity.EventImage;
 import com.haenggu.domain.enums.CategoryType;
 import com.haenggu.domain.enums.RegionType;
 import com.haenggu.http.response.*;
+import com.haenggu.http.response.event.EventDetailResponse;
+import com.haenggu.http.response.event.EventListResponse;
+import com.haenggu.http.response.event.EventResponse;
 import com.haenggu.service.EventService;
 
 import io.swagger.v3.oas.annotations.media.ExampleObject;

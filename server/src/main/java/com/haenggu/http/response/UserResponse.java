@@ -3,6 +3,7 @@ package com.haenggu.http.response;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.haenggu.domain.entity.Board;
+import com.haenggu.http.response.event.EventSimpleResponse;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;

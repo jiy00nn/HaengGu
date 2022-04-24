@@ -6,7 +6,7 @@ import com.haenggu.domain.entity.UserImage;
 import com.haenggu.domain.entity.Users;
 import com.haenggu.domain.enums.RoleType;
 import com.haenggu.exception.FileStorageException;
-import com.haenggu.http.response.EventSimpleResponse;
+import com.haenggu.http.response.event.EventSimpleResponse;
 import com.haenggu.http.response.UserResponse;
 import com.haenggu.repository.UserImageRepository;
 import com.haenggu.repository.UserRepository;
