@@ -5,9 +5,8 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.haenggu.domain.entity.Event;
 import com.haenggu.domain.entity.EventImage;
-import com.haenggu.domain.enums.CategoryType;
-import com.haenggu.domain.enums.RegionType;
 import com.haenggu.http.response.BoardSimpleResponse;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -28,19 +27,11 @@ public class EventDetailResponse extends EventResponse {
     private final String time;
     @Schema(description = "행사 장소", example = "서울 강남구 선릉로 807 K현대미술관")
     private final String eventLocation;
-    @Schema(description = "행사 이미지 Url", example = "[\n" +
-            "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.opengallery.co.kr%2Fexhibition%2F3607%2F&psig=AOvVaw2Dv9aEPEQ8KoQvBG3Bvi5E&ust=1650915437104000&source=images&cd=vfe&ved=0CAwQjRxqFwoTCNjxjbS5rfcCFQAAAAAdAAAAABAD"
-            + "\n]")
+    @ArraySchema(schema = @Schema(implementation = String.class, description = "행사 이미지 Url", example = "https://bit.ly/3EGKodL"))
     private final List<String> imageUrl;
-    @Schema(description = "행사 관련 동행글", example = "[" +
-            "{\n" +
-            "      \"board_id\": \"08d60d22-4cb2-4ae7-8514-384dd0de57c8\",\n" +
-            "      \"title\": \"체리필터 단콘 티켓 구한 사람 계신가요?\",\n" +
-            "      \"user\": {\n" +
-            "        \"username\": \"낭만고양이\",\n" +
-            "        \"profile_image\": \"http://localhost:8080/api/users/profile/6fcd1647-d640-488c-8497-7dbff946f2be\"\n" +
-            "      }\n" +
-            "    }")
+    @Schema(description = "회원이 행사를 즐겨찾기 선택한 여부", example = "true")
+    private Boolean isFavorite;
+    @ArraySchema(schema = @Schema(implementation = BoardSimpleResponse.class, description = "행사 관련 동행글"))
     private final List<BoardSimpleResponse> boards;
 
     public List<String> getImageUri(List<EventImage> eventImages) {
@@ -75,5 +66,6 @@ public class EventDetailResponse extends EventResponse {
         this.eventLocation = event.getEventLocation();
         this.imageUrl = getImageUri(event.getImage());
         this.boards = event.getBoards().stream().map(BoardSimpleResponse::new).collect(Collectors.toList());
+        this.isFavorite = false;
     }
 }

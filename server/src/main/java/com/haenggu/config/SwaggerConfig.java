@@ -44,7 +44,7 @@ public class SwaggerConfig {
         return SecurityContext.builder()
                 .securityReferences(defaultAuth())
                 .operationSelector(
-                        oc -> oc.requestMappingPattern().matches("((?!events|users/majors).)*")
+                        oc -> oc.requestMappingPattern().matches("((?!users/majors).)*")
                 )
                 .build();
     }
