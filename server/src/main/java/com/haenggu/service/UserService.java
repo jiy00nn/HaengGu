@@ -6,7 +6,7 @@ import com.haenggu.domain.entity.UserImage;
 import com.haenggu.domain.entity.Users;
 import com.haenggu.domain.enums.RoleType;
 import com.haenggu.exception.FileStorageException;
-import com.haenggu.http.response.EventSimpleResponse;
+import com.haenggu.http.response.event.EventBasicResponse;
 import com.haenggu.http.response.UserResponse;
 import com.haenggu.repository.UserImageRepository;
 import com.haenggu.repository.UserRepository;
@@ -44,10 +44,10 @@ public class UserService {
     public UserResponse getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Users user = userRepository.getById(UUID.fromString(authentication.getPrincipal().toString()));
-        List<EventSimpleResponse> eventSimpleResponse = new ArrayList<>();
+        List<EventBasicResponse> eventBasicResponse = new ArrayList<>();
 
         for(EventLike eventLike : user.getEventLikes()) {
-            eventSimpleResponse.add(new EventSimpleResponse(eventLike.getEvent()));
+            eventBasicResponse.add(new EventBasicResponse(eventLike.getEvent()));
         }
 
         String description = "";
@@ -61,7 +61,7 @@ public class UserService {
                 .description(description)
                 .tags(user.getUserTags())
                 .boards(user.getBoards())
-                .events(eventSimpleResponse)
+                .events(eventBasicResponse)
                 .build();
     }
 

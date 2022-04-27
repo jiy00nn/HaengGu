@@ -1,4 +1,4 @@
-package com.haenggu.http.response;
+package com.haenggu.http.response.event;
 
 import com.haenggu.controller.EventController;
 
